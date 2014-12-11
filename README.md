@@ -6,10 +6,6 @@ Repo for the [felloin.com](http://felloin.com) site
 > A video meeting system without the need to install any plugins.
 
 
-
-### Version
-0.1.1
-
 ### Installation
 
 You need Sails installed globally:
@@ -20,11 +16,21 @@ $ npm install -g sails
 
 ### Development
 
+Clone the source code to working copy:
+
+```sh
+$ git clone git@bitbucket.org:fello/felloin.git felloin
+$ cd felloin
+```
+
 Local build for testing and development:
 
 ```sh
-npm install && sails lift
+$ npm install && sails lift
 ```
+
+### Current Version
+0.1.1
 
 ### Todo's
 
