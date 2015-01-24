@@ -69,7 +69,8 @@
 node_modules
 bower_components
 assets/vendor
-
+#assets/vendor/*
+#!assets/vendor/fonts
 
 
 
