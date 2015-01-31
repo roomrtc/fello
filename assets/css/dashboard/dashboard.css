@@ -327,7 +327,7 @@ body.mini-navbar .nav-header {
 }
 body.mini-navbar #page-wrapper,
 body.mini-navbar .footer {
-  margin: 0 0 0 70px;
+  /*margin: 0 0 0 70px;*/
 }
 body.fixed-sidebar.mini-navbar .footer {
   margin: 0 0 0 0px;
@@ -1833,7 +1833,7 @@ ol.unstyled {
   bottom: 0;
   left: 0;
   padding: 10px 20px;
-  position: absolute;
+  /*position: absolute;*/
   right: 0;
 }
 .footer.fixed_full {

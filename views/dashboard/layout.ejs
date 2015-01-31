@@ -23,6 +23,13 @@
   <!--<link rel="stylesheet" href="/dashboard/plugins/morris/morris-0.4.3.min.css">-->
   <link rel="stylesheet" href="/css/dashboard/dashboard.css">
   <link rel="stylesheet" href="/css/dashboard/custom.css">
+  <!-- This is needed because Facebook login redirects add #_=_ at the end of the URL-->
+  <script type="text/javascript">
+    if (window.location.href.indexOf('#_=_') > 0) {
+      window.location = window.location.href.replace(/#.*/, '');
+    }
+  </script>
+  <base href="/dashboard/">
 </head>
 
 <body class="mini-navbar">

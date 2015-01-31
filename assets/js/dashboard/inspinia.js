@@ -34,21 +34,21 @@ $(document).ready(function () {
     });
 
     // Append config box / Only for demo purpose
-    $.get("skin-config.html", function (data) {
-        $('body').append(data);
-    });
+    //$.get("skin-config.html", function (data) {
+    //    $('body').append(data);
+    //});
 
     // minimalize menu
     $('.navbar-minimalize').click(function () {
         $("body").toggleClass("mini-navbar");
         SmoothlyMenu();
-    })
+    });
 
     // tooltips
     $('.tooltip-demo').tooltip({
         selector: "[data-toggle=tooltip]",
         container: "body"
-    })
+    });
 
     // Full height of sidebar
     function fix_height() {
@@ -72,7 +72,7 @@ $(document).ready(function () {
         if(!$("body").hasClass('body-small')) {
             fix_height();
         }
-    })
+    });
 
     $("[data-toggle=popover]")
         .popover();
