@@ -54,7 +54,7 @@
 
           <div class="feed-activity-list">
 
-            <div class="feed-element" ng-repeat="client in clients">
+            <div class="feed-element" ng-repeat="client in waitingClients">
               <a href="profile.html" class="pull-left">
                 <img alt="image" class="img-circle" src="/img/profile.jpg">
               </a>
@@ -63,13 +63,13 @@
                 <strong>{{client.name}}</strong> joined.<br>
                 <small class="text-muted">Email: {{client.email}}</small>
                 <div class="actions">
-                  <a class="btn btn-xs btn-success"><i class="fa fa-phone accept"></i> Accept </a>
-                  <a class="btn btn-xs btn-primary"><i class="fa fa-wechat chat"></i> Chat</a>
-                  <a class="btn btn-xs btn-danger"><i class="fa fa-minus-circle deny"></i> Deny</a>
+                  <a class="btn btn-xs btn-success" ng-click="accept(client.callId)"><i class="fa fa-phone accept"></i> Accept </a>
+                  <a class="btn btn-xs btn-primary" ng-click="chat(client.callId)"><i class="fa fa-wechat chat"></i> Chat</a>
+                  <a class="btn btn-xs btn-danger" ng-click="deny(client.callId)"><i class="fa fa-minus-circle deny"></i> Deny</a>
                 </div>
                 <div class="well">
                   <span ng-repeat="message in (client && client.messages)">
-                    {{message}}<br/>
+                    {{message.message}}<br/>
                   </span>
                 </div>
 

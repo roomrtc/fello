@@ -5,9 +5,9 @@
 require.config({
   urlArgs: "fello=" + (new Date()).getTime(),
   paths: {
-    'angular': '../vendor/angular/angular'
-    , 'jquery': '../vendor/jquery/jquery'
-    , 'bootstrapJs': '../vendor/bootstrap/bootstrap'
+    'angular': '../../vendor/angular/angular'
+    , 'jquery': '../../vendor/jquery/jquery'
+    , 'bootstrapJs': '../../vendor/bootstrap/bootstrap'
   },
   shim: {
     'bootstrapJs': ['jquery']

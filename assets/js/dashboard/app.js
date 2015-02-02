@@ -85,7 +85,7 @@ angular
         easyrtc.disconnect();
       }
     });
-    //$state.go('live');
+    //$state.go('live'); default --> do not needed statement here ;)
     $rootScope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {
 
     });
