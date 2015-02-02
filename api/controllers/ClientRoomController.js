@@ -6,9 +6,9 @@ module.exports = {
   // index for design --> Must delete if finished
   index: function (req, res) {
     // override the layout to use another
-    res.locals.layout = 'livingroom/layout';
+    res.locals.layout = 'clientroom/layout';
     res.view(null, {
-      title: "Living Room"
+      title: "Client Room"
     });
   }
 };

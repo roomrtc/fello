@@ -50,4 +50,12 @@ module.exports.routes = {
     view: 'dashboard'
   }
 
+  , '/livingroom/*': {
+    view: 'clientroom'
+  }
+
+  , '/clientroom/*': {
+    view: 'clientroom'
+  }
+
 };

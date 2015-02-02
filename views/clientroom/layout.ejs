@@ -25,6 +25,13 @@
   <link rel="stylesheet" href="/css/dashboard/custom.css">
   <link rel="stylesheet" href="/css/livingroom/livingroom.css">
   <link rel="stylesheet" href="/css/livingroom/chatbox.css">
+  <!-- This is needed because Facebook login redirects add #_=_ at the end of the URL-->
+  <script type="text/javascript">
+    if (window.location.href.indexOf('#_=_') > 0) {
+      window.location = window.location.href.replace(/#.*/, '');
+    }
+  </script>
+  <base href="/clientroom/">
 </head>
 
 <body class="mini-navbar">
