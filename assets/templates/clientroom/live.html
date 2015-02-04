@@ -27,7 +27,9 @@
 
         <div>
           <!--initializing...-->
-          <!--<video id="caller" width="300" height="200"></video>-->
+          <p ng-show="!ismeeting">Calling an agent ...</p>
+          <p ng-show="isDenied"><button ng-click="recall(me.easyRtcId)">{{me.easyRtcId}}</button> </p>
+          <video id="caller" width="300" height="200"></video>
           <div id="otherClients">
 
           </div>
