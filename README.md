@@ -1,6 +1,6 @@
 # felloin-site
 
-Repo for the [felloin.com](http://felloin.com) site
+Repo for the [fello.in](http://fello.in) site
 
 > Felloin is a group video chat and screen sharing.
 > A video meeting system without the need to install any plugins.
@@ -23,13 +23,22 @@ $ git clone git@bitbucket.org:fello/felloin.git felloin
 $ cd felloin
 ```
 
+Setup MySQL Server:
+
+```sh
+Database name: felloin
+Account usr/pwd: felloin/felloin
+```
+
 Local build for testing and development:
 
 ```sh
-$ npm install && sails lift
+$ npm install 
+$ bower install 
+$ sails lift
 ```
 
-### Current Version
+### Current Version Development
 0.1.1
 
 ### Todo's
@@ -47,4 +56,4 @@ Empty
 License
 ----------
 
-Fello Group © 2014
+Copyright Fello Group © 2014. All rights reserved.
