@@ -115,9 +115,23 @@ angular.module('fello.clientroom')
           case "clientDisconnect":
             console.log('Client disconnected');
             break;
-          case "ban":
-            alert("You are kicked by Admin !");
-            console.log('You are kicked by Admin !');
+          case "callAccept":
+            console.log('You are kicked by Admin !', msgData);
+            if (msgData.easyrtcsid == $scope.me.easyRtcId) {
+              alert("You are kicked by Admin !");
+            }
+            break;
+          case "callDeny":
+            console.log('You are kicked by Admin !', msgData);
+            if (msgData.easyrtcid == $scope.me.easyRtcId) {
+              alert("You are kicked by Admin !");
+            }
+            break;
+          case "callBlock":
+            console.log('You are kicked by Admin !', msgData);
+            if (msgData.easyrtcsid == $scope.me.easyRtcId) {
+              alert("You are kicked by Admin !");
+            }
             break;
           case "test":
             alert("test ok");

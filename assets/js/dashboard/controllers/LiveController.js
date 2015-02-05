@@ -60,6 +60,7 @@ angular.module('fello.dashboard').controller('LiveController', ['$scope', '$filt
       client.callId = callId;
       client.easyrtcid = callId;
       client.timeJoined = peer.roomJoinTime;
+      client.previewMsg = {};
       client.isAgent = peer["apiField"] && peer["apiField"]["isAgent"] && peer["apiField"]["isAgent"]["fieldValue"];
 
       if (client.isAgent) {
@@ -78,6 +79,11 @@ angular.module('fello.dashboard').controller('LiveController', ['$scope', '$filt
   };
 
   var _loginSuccess = function (easyrtcid) {
+    var roomName = $scope.roomInfo.roomName;
+    // set the id is  not Agent
+    easyrtc.setRoomApiField(roomName, "isAgent", true);
+    // set the id is need show
+    easyrtc.setRoomApiField(roomName, "isDisplay", true);
     $scope.me.easyRtcId = easyrtcid;
     $scope.$apply();
   };
@@ -121,6 +127,7 @@ angular.module('fello.dashboard').controller('LiveController', ['$scope', '$filt
       $scope.ismeeting = true;
       var video = document.getElementById('caller');
       easyrtc.setVideoObjectSrc(video, stream);
+      // remove
     });
 
     easyrtc.setOnStreamClosed(function (callerEasyrtcid) {
@@ -143,6 +150,18 @@ angular.module('fello.dashboard').controller('LiveController', ['$scope', '$filt
     // custom event
     easyrtc.setServerListener(function (msgType, msgData, targeting) {
       switch (msgType) {
+        case "callAccept":
+          console.log('Other admin accept the call !', msgData.agentName);
+
+          break;
+        case "callDeny":
+          console.log('Admin kicked client !', msgData.agentName);
+          console.log('Admin kicked client name !', msgData.clientName);
+          break;
+        case "callBlock":
+          console.log('Admin blocked client !', msgData.agentName);
+          console.log('Admin blocked client name !', msgData.clientName);
+          break;
         case "clientDisconnect":
           console.log('Client disconnected');
           break;
@@ -151,6 +170,9 @@ angular.module('fello.dashboard').controller('LiveController', ['$scope', '$filt
           break;
         case "clientJoin":
           console.log('new client joined !, msgData: ', msgData);
+          break;
+        case "ban":
+          console.log('new client banned ! ', msgData);
           break;
 
       }
@@ -180,9 +202,21 @@ angular.module('fello.dashboard').controller('LiveController', ['$scope', '$filt
     // make call
   };
 
-  $scope.deny = function (callId) {
-    // make call
+  $scope.drop = function (callId) {
     easyrtc.hangup(callId);
+  };
+
+  $scope.deny = function (callId) {
+    var data = {
+      easyrtcid: callId,
+      roomName: $scope.roomInfo.roomName
+    };
+    easyrtc.hangup(callId);
+    easyrtc.sendServerMessage("callDeny", data, function (msgType, msgData) {
+      console.log("OK: ", msgData);
+    }, function (errorCode, errorText) {
+      console.log("error was " + errorText);
+    });
   };
 
   $scope.getSocketCount = function (data) {

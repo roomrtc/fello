@@ -22,7 +22,7 @@ module.exports.bootstrap = function (cb) {
   var easyrtcOptions = {
     //apiPublicFolder: 'js',
     demosEnable: false
-    , logLevel: "info" //"debug"
+    , logLevel: "debug" //"debug"
     , logDateEnable: false
     , roomAutoCreateEnable: true
     , roomDefaultEnable: false
@@ -98,6 +98,7 @@ module.exports.bootstrap = function (cb) {
                 var client = {};
                 client.username = connection.getUsername();
                 client.agentField = connection.getFieldSync("isAgent");
+                //client.agentField = pub.app
                 client.isAgent = connection.getFieldValueSync("isAgent");
                 client.easyrtcid = connection.getEasyrtcid();
                 if (client.isAgent && client.isAgent == "true") {
@@ -149,21 +150,20 @@ module.exports.bootstrap = function (cb) {
     easyrtc.events.on("easyrtcMsg", function (connectionObj, msg, socketCallback, next) {
       // TODO: Check connection application name.
       switch (msg.msgType) {
-        case "kick":
-          var banUserEasyid = msg.msgData.easyrtcid;
-          var roomName = msg.msgData.roomName;
-          connectionObj.room(roomName, function (err, roomObj) {
+        case "callAccept":
+          connectionObj.getApp().room(roomName, function (err, roomObj) {
 
             if (!err) {
               // notify agent that a client connected and join this room
               roomObj.getConnectionWithEasyrtcid(banUserEasyid, function (err, connectionObj) {
-                //easyrtc.events.emit("roomLeave", connectionObj, "roomName", function (err) {
-                easyrtc.events.emit("ban", connectionObj, "roomName", function (err) {
+                easyrtc.events.emit("callAccept", connectionObj, roomName, function (err) {
+                  // easyrtc.events.emit("ban", connectionObj, "roomName", function (err) {
                   if (err) {
                     console.log("Error kicking user from room.");
                   }
                   else {
                     console.log("User is kicked from room");
+                    // easyrtc.events.emit("ban", connectionObj, "roomName", function (err) {
                   }
                 });
               });
@@ -172,7 +172,49 @@ module.exports.bootstrap = function (cb) {
 
             }
           });
+              break;
+        case "callDeny":
+          var banUserEasyid = msg.msgData.easyrtcid;
+          var roomName = msg.msgData.roomName;
+          connectionObj.getApp().room(roomName, function (err, roomObj) {
+
+            if (!err) {
+              // notify agent that a client connected and join this room
+              roomObj.getConnectionWithEasyrtcid(banUserEasyid, function (err, connectionObj) {
+                easyrtc.events.emit("roomLeave", connectionObj, roomName, function (err) {
+                // easyrtc.events.emit("ban", connectionObj, "roomName", function (err) {
+                  if (err) {
+                    console.log("Error kicking user from room.", err);
+                    socketCallback({msgType: 'callDeny', msgData: {message: "Can't kick user", error: err}});
+                    next(null);
+                  }
+                  else {
+                    console.log("User is kicked from room");
+                    // easyrtc.events.emit("ban", connectionObj, "roomName", function (err) {
+                    socketCallback({msgType: 'callDeny', msgData: {message: "User leave out of room " + roomName, error: err}});
+                    next(null);
+                  }
+                });
+                easyrtc.events.emit("emitEasyrtcMsg", connectionObj,
+                  "callDeny", { msgData: {
+                    socketid:  connectionObj.socket.id
+                    , easyrtcid:  banUserEasyid
+                    , message: "You are kicked by Admin"
+                  }}, null,
+                  function (err) {
+                    pub.util.logInfo("clientJoin Event for " + connectionObj.socket.id + " sent to " + connectionObj.socket.id);
+                  }
+                );
+              });
+            } else {
+              // The participant have gone !
+
+            }
+          });
           break;
+        case "callBlock":
+
+              break;
         case "socketCount":
           socketCallback({msgType: 'socketCount', msgData: socketCount}); //nice
           next(null);
