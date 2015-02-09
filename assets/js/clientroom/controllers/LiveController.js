@@ -12,9 +12,13 @@ angular.module('fello.clientroom')
       $scope.isDenied = false;
       $scope.me = {};
       $scope.agent = {};
+      $scope.agentNameRequest = "";
+      $scope.message = "";
 
       $scope.roomInfo = {};
       $scope.roomInfo.roomName = "fello.in_congtya";
+      $scope.helper = {};
+      $scope.helper.messageNotify = "Are you ready ? Automatically call an Agent in {{}} seconds";
 
       var now = new Date();
 
@@ -48,7 +52,7 @@ angular.module('fello.clientroom')
     }
 
     var _loginSuccess = function (easyrtcid) {
-      $scope.me.easyRtcId = easyrtcid;
+      $scope.me.easyrtcid = easyrtcid;
       $scope.$apply();
     };
 
@@ -64,9 +68,11 @@ angular.module('fello.clientroom')
 
       easyrtc.setRoomOccupantListener(roomListener);
       easyrtc.initMediaSource(function () {       // success callback
+          $scope.me.promptMessage = "AreYouReadyCall";
           var selfVideo = document.getElementById("self");
           easyrtc.setVideoObjectSrc(selfVideo, easyrtc.getLocalStream());
           easyrtc.connect("fello.serverApp", _loginSuccess, _loginFailure);
+          $scope.$apply();
         }, _loginFailure
       );
 
@@ -88,26 +94,19 @@ angular.module('fello.clientroom')
       easyrtc.setStreamAcceptor(function (callerEasyrtcid, stream) {
         var video = document.getElementById('caller');
         easyrtc.setVideoObjectSrc(video, stream);
-        $scope.ismeeting = true;
+        $scope.me.inconversation = true;
+        $scope.agent.easyrtcid = callerEasyrtcid;
         $scope.$apply();
       });
 
       easyrtc.setOnStreamClosed(function (callerEasyrtcid) {
-        easyrtc.setVideoObjectSrc(document.getElementById('caller'), "");
+        if (document.getElementById('caller') != null) {
+          easyrtc.setVideoObjectSrc(document.getElementById('caller'), "");
+          $scope.me.inconversation = true;
+          delete $scope.agent.easyrtcid;
+          $scope.$apply();
+        }
       });
-
-      // set the id is  not Agent
-      easyrtc.setRoomApiField(roomName, "isAgent", false);
-      // set the id is need show
-      easyrtc.setRoomApiField(roomName, "isDisplay", true);
-      easyrtc.joinRoom("fello.in_congtya", null, function(roomName) {
-
-          console.log("I'm now in room " + roomName);
-
-        }, function(errorCode, errorText, roomName) {
-
-          console.log("had problems joining " + roomName);
-        });
 
       // custom event
       easyrtc.setServerListener(function (msgType, msgData, targeting) {
@@ -116,22 +115,37 @@ angular.module('fello.clientroom')
             console.log('Client disconnected');
             break;
           case "callAccept":
-            console.log('You are kicked by Admin !', msgData);
-            if (msgData.easyrtcsid == $scope.me.easyRtcId) {
-              alert("You are kicked by Admin !");
+            console.log('You are accepted by Admin !', msgData);
+            if (msgData.easyrtcid == $scope.me.easyrtcid) {
+              alert("You are accepted by Admin !");
             }
+            break;
+          case "callDrop":
+            if (msgData.easyrtcid == $scope.me.easyrtcid) {
+              console.log('You are dropped by Admin !', msgData);
+            }
+            $scope.me.inconversation = false;
+            $scope.me.promptMessage = "DoYouWantRecall";
+            $scope.$apply();
             break;
           case "callDeny":
-            console.log('You are kicked by Admin !', msgData);
-            if (msgData.easyrtcid == $scope.me.easyRtcId) {
-              alert("You are kicked by Admin !");
+            if (msgData.easyrtcid == $scope.me.easyrtcid) {
+              console.log('You are denied by Admin !', msgData);
+              //alert("You are denied by Admin !");
             }
+            $scope.me.inconversation = false;
+            $scope.me.promptMessage = "YouAreDenied";
+            $scope.$apply();
+
             break;
           case "callBlock":
-            console.log('You are kicked by Admin !', msgData);
-            if (msgData.easyrtcsid == $scope.me.easyRtcId) {
-              alert("You are kicked by Admin !");
+            if (msgData.easyrtcid == $scope.me.easyrtcid) {
+              console.log('You are kicked by Admin !', msgData);
+              //alert("You are kicked by Admin !");
             }
+            $scope.me.inconversation = false;
+            $scope.me.promptMessage = "YouAreBlocked";
+            $scope.$apply();
             break;
           case "test":
             alert("test ok");
@@ -143,6 +157,24 @@ angular.module('fello.clientroom')
         console.log(targeting);
       });
     }
+
+    $scope.call = function (agentNameRequest) {
+      var roomName = $scope.roomInfo.roomName;
+      // set the id is  not Agent
+      easyrtc.setRoomApiField(roomName, "isAgent", false);
+      easyrtc.setRoomApiField(roomName, "isDisplay", true);
+      easyrtc.setRoomApiField(roomName, "agentName", agentNameRequest);
+      easyrtc.joinRoom(roomName, null, function (roomName) {
+        $scope.me.promptMessage = "PleaseWaitAccept";
+        $scope.$apply();
+        console.log("I'm now in room " + roomName);
+
+      }, function (errorCode, errorText, roomName) {
+
+        console.log("had problems joining " + roomName);
+      });
+
+    };
 
 
     $scope.recall = function (callId) {
@@ -158,13 +190,36 @@ angular.module('fello.clientroom')
 
     };
 
-    $scope.chat = function (callId) {
-      // make call
+    $scope.chat = function () {
+
+      var msgData = {
+        fromClientId: $scope.me.easyrtcid,
+        toAdminId: $scope.agent.easyrtcid,
+        roomName: $scope.roomInfo.roomName,
+        message: $scope.message
+      };
+
+      easyrtc.sendServerMessage("chatMessage", msgData, function (msgType, msgData) {
+        console.log("OK: ", msgData);
+      }, function (errorCode, errorText) {
+        console.log("error was " + errorText);
+      });
+      $scope.message = "";
+      $scope.$apply();
     };
 
-    $scope.deny = function (callId) {
-      // make call
+    $scope.drop = function (callId) {
+      // drop call
     };
+
+    $scope.stopTimer = function () {
+      $scope.$broadcast('timer-stop');
+      $scope.timerRunning = false;
+    };
+
+    $scope.$on('timer-stopped', function (event, data) {
+      console.log('Timer Stopped - data = ', data);
+    });
 
     initApp();
     initRtc();

@@ -27,11 +27,72 @@
 
         <div>
           <!--initializing...-->
-          <p ng-show="!ismeeting">Calling an agent ...</p>
-          <p ng-show="isDenied"><button ng-click="recall(me.easyRtcId)">{{me.easyRtcId}}</button> </p>
-          <video id="caller" width="300" height="200"></video>
-          <div id="otherClients">
+          <div ng-switch on="me.promptMessage">
+            <div ng-switch-when="AreYouReadyCall">
+              <h2>
+                <timer countdown="10" interval="1000" finish-callback="call(null)">Are you ready ? Automatically call
+                  after {{seconds}} second{{secondsS}}
+                </timer>
+              </h2>
+              <div class="row">
+                <div class="col-sm-12">
+                  <button class="btn btn-success" ng-click="call(agentNameRequest)">Call now !</button>
+                  &nbsp;
+                  <button class="btn btn-danger" ng-click="stopTimer()">I'm not ready</button>
+                </div>
+              </div>
+            </div>
+            <div ng-switch-when="DoYouWantRecall">
+              <div class="row">
+                <h2>Your call has been finished! Do you want to recall ?</h2>
 
+                <div>
+                  <button class="btn btn-success" ng-click="call(agentNameRequest)">Recall</button>
+                </div>
+              </div>
+            </div>
+            <div ng-switch-when="YouAreDenied">
+              <div class="row">
+                <h2>You are denied by Admin! Do you want to recall ?</h2>
+                <div>
+                  <button class="btn btn-success" ng-click="call(agentNameRequest)">Recall</button>
+                </div>
+              </div>
+            </div>
+            <div ng-switch-when="YouAreBlocked">
+              <div class="row">
+                <h2>Sorry! You are blocked by Admin for 1 week. Now you can't do call.</h2>
+              </div>
+            </div>
+            <div ng-switch-when="PleaseAllowAccessMedia">
+              <div class="row">
+                <h2>We do not have permission access your Media Device. <br/> Please allow us to use your Camera and Microphone. <br/> After that enjoy your conversation!</h2>
+
+                <div>
+                  <p>Insert an image to guide user!</p>
+                </div>
+              </div>
+
+            </div>
+            <div ng-switch-when="PleaseWaitAccept">
+              <div class="row">
+                <div>
+                  <h2 ng-show="!me.inconversation">Please wait agent accept your call...</h2>
+                  <video id="caller" width="300" height="200"></video>
+                  <div id="otherClients">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div ng-switch-default>
+              <div class="row">
+                <h2>Please allow us to use your Camera and Microphone. <br/> After that enjoy your conversation!</h2>
+
+                <div>
+                  <p>Insert an image to guide user!</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

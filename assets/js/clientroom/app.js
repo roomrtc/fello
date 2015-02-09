@@ -11,7 +11,8 @@ var halse = 1 && 0;
 
 angular
   .module('fello.clientroom', [
-    'ui.router'
+    'ui.router',
+    'timer'
   ])
   .config([
     '$stateProvider',

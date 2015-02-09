@@ -70,7 +70,7 @@
 
   </div>
 
-  <div class="wrapper wrapper-chatbox">
+  <div class="wrapper wrapper-chatbox" style="display:none;">
     <div>
       <div class="chat-activity-list">
 
@@ -127,10 +127,10 @@
     <div class="chat-form">
       <form role="form">
         <div class="form-group">
-          <textarea class="form-control" placeholder="Message"></textarea>
+          <textarea class="form-control" placeholder="Message" ng-model="message"></textarea>
         </div>
         <div class="text-right">
-          <button type="submit" class="btn btn-sm btn-primary m-t-n-xs"><strong>Send message</strong></button>
+          <button type="submit" class="btn btn-sm btn-primary m-t-n-xs" ng-submit="chat()" ng-enabled="message && message.length > 0"><strong>Send message</strong></button>
         </div>
       </form>
     </div>
@@ -147,6 +147,7 @@
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 <script type="text/javascript" src="/vendor/angular/angular.js"></script>
 <script type="text/javascript" src="/vendor/angular-ui-router/angular-ui-router.js"></script>
+<script type="text/javascript" src="/vendor/angular-timer/angular-timer.js"></script>
 
 <!-- Fello script main -->
 <script type="text/javascript" src="/js/clientroom/app.js"></script>

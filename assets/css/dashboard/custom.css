@@ -1,11 +1,53 @@
-fa.fa-phone.accept {
+.fa.fa-phone.accept-icon {
   color: green;
 }
 
-fa.fa-minus-circle.deny {
+.fa.fa-minus-circle.deny-icon {
   color: red;
 }
 
-fa.fa-wechat.chat{
+.fa.fa-wechat.chat-icon{
   color: white;
+}
+
+/*.animate-if {*/
+  /*background:white;*/
+  /*border:1px solid black;*/
+  /*padding:10px;*/
+/*}*/
+
+.animate-if.ng-enter, .animate-if.ng-leave {
+  -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+}
+
+.animate-if.ng-enter,
+.animate-if.ng-leave.ng-leave-active {
+  opacity:0;
+}
+
+.animate-if.ng-leave,
+.animate-if.ng-enter.ng-enter-active {
+  opacity:1;
+}
+
+/* animate ng-switch */
+.animate-switch.ng-animate {
+  -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+}
+
+.animate-switch.ng-leave.ng-leave-active,
+.animate-switch.ng-enter {
+  top:-50px;
+}
+.animate-switch.ng-leave,
+.animate-switch.ng-enter.ng-enter-active {
+  top:0;
 }
