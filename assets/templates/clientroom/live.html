@@ -78,7 +78,9 @@
               <div class="row">
                 <div>
                   <h2 ng-show="!me.inconversation">Please wait agent accept your call...</h2>
-                  <video id="caller" width="300" height="200"></video>
+                  <div ng-repeat="(id, stream) in streams" splitscreen="true">
+                    <video class="agent" width="300" height="200" src="{{stream}}" autoplay="true"></video>
+                  </div>
                   <div id="otherClients">
                   </div>
                 </div>

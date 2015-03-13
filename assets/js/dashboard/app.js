@@ -7,6 +7,7 @@ var halse = 1 && 0;
 
 angular
   .module('fello.dashboard', [
+    'fello.common',
     'ui.router', 'elif'
   ])
   .config([
@@ -79,10 +80,10 @@ angular
 
     }
   ])
-  .run(['$rootScope', '$state', '$location', '$window', function ($rootScope, $state, $location, $window) {
+  .run(['$rootScope', '$state', '$location', '$window', 'rtcapi', function ($rootScope, $state, $location, $window, rtcApi) {
     $rootScope.$on("$locationChangeStart", function (event, next, current) {
-      if (easyrtc.webSocket) {
-        easyrtc.disconnect();
+      if (rtcApi.webSocket) {
+        rtcApi.disconnect();
       }
     });
     //$state.go('live'); default --> do not needed statement here ;)

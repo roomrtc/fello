@@ -6,11 +6,21 @@
  * Created by Vunb on 26/8/2014.
  */
 
-var thue = 0 || 1;
-var halse = 1 && 0;
+angular.module('jm.i18next').config(['$i18nextProvider', function ($i18nextProvider) {
+  $i18nextProvider.options = {
+    lng: 'de',
+    useCookie: false,
+    useLocalStorage: false,
+    fallbackLng: 'dev',
+    resGetPath: '../locales/__lng__/__ns__.json',
+    defaultLoadingValue: '' // ng-i18next option, *NOT* directly supported by i18next
+  };
+}]);
 
 angular
   .module('fello.clientroom', [
+    'fello.common',
+    'jm.i18next',
     'ui.router',
     'timer'
   ])
@@ -84,10 +94,10 @@ angular
 
     }
   ])
-  .run(['$rootScope', '$state', '$location', '$window', function ($rootScope, $state, $location, $window) {
+  .run(['$rootScope', '$state', '$location', '$window', 'rtcapi', function ($rootScope, $state, $location, $window, rtcApi) {
     $rootScope.$on("$locationChangeStart", function (event, next, current) {
-      if (easyrtc.webSocket) {
-        easyrtc.disconnect();
+      if (rtcApi.webSocket) {
+        rtcApi.disconnect();
       }
     });
     //$state.go('live'); default --> do not needed statement here ;)

@@ -15,6 +15,12 @@ module.exports = function(grunt) {
 		dist: {
 			src: ['.tmp/public/concat/production.js'],
 			dest: '.tmp/public/min/production.min.js'
+		}, distDashboard: {
+			src: ['.tmp/public/concat/production.dashboard.js'],
+			dest: '.tmp/public/min/app.dashboard.min.js'
+		}, distClientRoom: {
+			src: ['.tmp/public/concat/production.clientroom.js'],
+			dest: '.tmp/public/min/app.clientroom.min.js'
 		}
 	});
 

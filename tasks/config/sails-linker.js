@@ -14,6 +14,127 @@
 module.exports = function(grunt) {
 
 	grunt.config.set('sails-linker', {
+    devJsDashboard: {
+      options: {
+        startTag: '<!--DASHBOARD SCRIPTS-->',
+        endTag: '<!--DASHBOARD SCRIPTS END-->',
+        fileTmpl: '<script src="%s"></script>',
+        appRoot: '.tmp/public',
+        verifyExists: false
+      },
+      files: {
+        '.tmp/public/**/*.html': require('../pipeline').jsFilesToInjectDashboard,
+        'views/**/*.html': require('../pipeline').jsFilesToInjectDashboard,
+        'views/**/*.ejs': require('../pipeline').jsFilesToInjectDashboard
+      }
+    },
+
+    devJsDashboardRelative: {
+      options: {
+        startTag: '<!--DASHBOARD SCRIPTS-->',
+        endTag: '<!--DASHBOARD SCRIPTS END-->',
+        fileTmpl: '<script src="%s"></script>',
+        appRoot: '.tmp/public',
+        relative: true,
+        verifyExists: false
+      },
+      files: {
+        '.tmp/public/**/*.html': require('../pipeline').jsFilesToInjectDashboard,
+        'views/**/*.html': require('../pipeline').jsFilesToInjectDashboard,
+        'views/**/*.ejs': require('../pipeline').jsFilesToInjectDashboard
+      }
+    },
+    devJsClientRoom: {
+      options: {
+        startTag: '<!--CLIENTROOM SCRIPTS-->',
+        endTag: '<!--CLIENTROOM SCRIPTS END-->',
+        fileTmpl: '<script src="%s"></script>',
+        appRoot: '.tmp/public',
+        verifyExists: false
+      },
+      files: {
+        '.tmp/public/**/*.html': require('../pipeline').jsFilesToInjectClientRoom,
+        'views/**/*.html': require('../pipeline').jsFilesToInjectClientRoom,
+        'views/**/*.ejs': require('../pipeline').jsFilesToInjectClientRoom
+      }
+    },
+
+    devJsClientRoomRelative: {
+      options: {
+        startTag: '<!--CLIENTROOM SCRIPTS-->',
+        endTag: '<!--CLIENTROOM SCRIPTS END-->',
+        fileTmpl: '<script src="%s"></script>',
+        appRoot: '.tmp/public',
+        relative: true,
+        verifyExists: false
+      },
+      files: {
+        '.tmp/public/**/*.html': require('../pipeline').jsFilesToInjectClientRoom,
+        'views/**/*.html': require('../pipeline').jsFilesToInjectClientRoom,
+        'views/**/*.ejs': require('../pipeline').jsFilesToInjectClientRoom
+      }
+    },
+    prodJsDashboard: {
+      options: {
+        startTag: '<!--DASHBOARD SCRIPTS-->',
+        endTag: '<!--DASHBOARD SCRIPTS END-->',
+        fileTmpl: '<script src="%s"></script>',
+        appRoot: '.tmp/public',
+        verifyExists: false
+      },
+      files: {
+        '.tmp/public/**/*.html': ['.tmp/public/min/app.dashboard.min.js'],
+        'views/**/*.html': ['.tmp/public/min/app.dashboard.min.js'],
+        'views/**/*.ejs': ['.tmp/public/min/app.dashboard.min.js']
+      }
+    },
+
+    prodJsDashboardRelative: {
+      options: {
+        startTag: '<!--DASHBOARD SCRIPTS-->',
+        endTag: '<!--DASHBOARD SCRIPTS END-->',
+        fileTmpl: '<script src="%s"></script>',
+        appRoot: '.tmp/public',
+        relative: true,
+        verifyExists: false
+      },
+      files: {
+        '.tmp/public/**/*.html': ['.tmp/public/min/app.dashboard.min.js'],
+        'views/**/*.html': ['.tmp/public/min/app.dashboard.min.js'],
+        'views/**/*.ejs': ['.tmp/public/min/app.dashboard.min.js']
+      }
+    },
+    prodJsClientRoom: {
+      options: {
+        startTag: '<!--CLIENTROOM SCRIPTS-->',
+        endTag: '<!--CLIENTROOM SCRIPTS END-->',
+        fileTmpl: '<script src="%s"></script>',
+        appRoot: '.tmp/public',
+        verifyExists: false
+      },
+      files: {
+        '.tmp/public/**/*.html': ['.tmp/public/min/app.clientroom.min.js'],
+        'views/**/*.html': ['.tmp/public/min/app.clientroom.min.js'],
+        'views/**/*.ejs': ['.tmp/public/min/app.clientroom.min.js']
+      }
+    },
+
+    prodJsClientRoomRelative: {
+      options: {
+        startTag: '<!--CLIENTROOM SCRIPTS-->',
+        endTag: '<!--CLIENTROOM SCRIPTS END-->',
+        fileTmpl: '<script src="%s"></script>',
+        appRoot: '.tmp/public',
+        relative: true,
+        verifyExists: false
+      },
+      files: {
+        '.tmp/public/**/*.html': ['.tmp/public/min/app.clientroom.min.js'],
+        'views/**/*.html': ['.tmp/public/min/app.clientroom.min.js'],
+        'views/**/*.ejs': ['.tmp/public/min/app.clientroom.min.js']
+      }
+    },
+
 		devJs: {
 			options: {
 				startTag: '<!--SCRIPTS-->',

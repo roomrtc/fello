@@ -70,6 +70,9 @@
 
   </div>
 
+  <chat  adjustable="true" room="RoomService"></chat>
+
+
   <div class="wrapper wrapper-chatbox" style="display:none;">
     <div>
       <div class="chat-activity-list">
@@ -138,18 +141,27 @@
 
 </div>
 
-<!-- jQuery Load -->
-<script type="text/javascript" src="/vendor/jquery/jquery.js"></script>
-<script type="text/javascript" src="/vendor/bootstrap/bootstrap.js"></script>
-
-<!-- Fello.client main -->
 <script type="text/javascript" src="/easyrtc/easyrtc.js"></script>
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-<script type="text/javascript" src="/vendor/angular/angular.js"></script>
-<script type="text/javascript" src="/vendor/angular-ui-router/angular-ui-router.js"></script>
-<script type="text/javascript" src="/vendor/angular-timer/angular-timer.js"></script>
 
-<!-- Fello script main -->
-<script type="text/javascript" src="/js/clientroom/app.js"></script>
-<!--<script type="text/javascript" src="/js/clientroom/services/CallService.js"></script>-->
-<script type="text/javascript" src="/js/clientroom/controllers/LiveController.js"></script>
+<!--CLIENTROOM SCRIPTS-->
+<script src="/vendor/jquery/jquery.js"></script>
+<script src="/vendor/lodash/lodash.js"></script>
+<script src="/vendor/bootstrap/bootstrap.js"></script>
+<script src="/vendor/momentjs/moment.js"></script>
+<script src="/vendor/humanize-duration/humanize-duration.js"></script>
+<script src="/vendor/angular/angular.js"></script>
+<script src="/vendor/angular-ui-router/angular-ui-router.js"></script>
+<script src="/vendor/angular-timer/angular-timer.js"></script>
+<script src="/vendor/i18next/i18next.js"></script>
+<script src="/vendor/ng-i18next/ng-i18next.js"></script>
+<script src="/js/common/app.js"></script>
+<script src="/js/common/services/rtcapi.js"></script>
+<script src="/js/clientroom/app.js"></script>
+<script src="/js/clientroom/services/EventService.js"></script>
+<script src="/js/clientroom/services/SnapshooterService.js"></script>
+<script src="/js/clientroom/services/AvatarProvider.js"></script>
+<script src="/js/clientroom/services/ChatService.js"></script>
+<script src="/js/clientroom/directives/ChatDirective.js"></script>
+<script src="/js/clientroom/controllers/LiveController.js"></script>
+<!--CLIENTROOM SCRIPTS END-->

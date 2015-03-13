@@ -53,8 +53,10 @@ module.exports.routes = {
   , '/livingroom/*': {
     view: 'clientroom'
   }
-
   , '/clientroom/*': {
+    view: 'clientroom'
+  }
+  , '/help/*': {
     view: 'clientroom'
   }
 

@@ -14,7 +14,11 @@
     "angular-ui-router": "~0.2.13",
     "underscore": "~1.7.0",
     "ng-elif": "~0.1.2",
-    "angular-timer": "~1.2.0"
+    "angular-timer": "~1.2.0",
+    "lodash": "~3.2.0",
+    "ng-i18next": "~0.3.6",
+    "momentjs": "~2.9.0",
+    "humanize-duration": "~2.4.0"
   },
   "name": "fello.in",
   "version": "0.0.0",

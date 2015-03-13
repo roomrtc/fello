@@ -24,7 +24,7 @@ var cssFilesToInject = [
 // (uses Grunt-style wildcard/glob/splat expressions)
 var jsFilesToInject = [
   'vendor/**/*.js',
-  
+
   // Load sails.io before everything else
   'js/dependencies/sails.io.js',
 
@@ -35,6 +35,60 @@ var jsFilesToInject = [
   // will be injected here in no particular order.
   'js/**/*.js'
 ];
+
+var jsFilesToInjectDashboard = [
+  // <!-- Mainly scripts -->
+  '/vendor/jquery/jquery.js',
+  '/vendor/bootstrap/bootstrap.js',
+  '/js/plugins/metisMenu/jquery.metisMenu.js',
+  '/js/plugins/slimscroll/jquery.slimscroll.min.js',
+  '/js/plugins/pace/pace.min.js',
+  // <!-- Custom and plugin scripts -->
+  '/js/dashboard/inspinia.js',
+  // <!-- Fello main scripts -->
+  '/easyrtc/easyrtc.js',
+  '/socket.io/socket.io.js',
+  '/vendor/angular/angular.js',
+  '/vendor/angular-ui-router/angular-ui-router.js',
+  '/vendor/ng-elif/elif.js',
+  <!-- Fello app scripts -->
+  '/js/common/app.js',
+  '/js/common/services/rtcapi.js',
+  '/js/dashboard/app.js',
+  '/js/dashboard/filters/TimeAgoFilter.js',
+  '/js/dashboard/services/CallService.js',
+  '/js/dashboard/directives/TimeAgoDirective.js',
+  '/js/dashboard/controllers/LiveController.js'
+];
+
+var jsFilesToInjectClientRoom = [
+  // <!-- Mainly scripts -->
+  '/easyrtc/easyrtc.js',
+  '/socket.io/socket.io.js',
+  // <!-- Plugin scripts -->
+  '/vendor/jquery/jquery.js',
+  '/vendor/lodash/lodash.js',
+  '/vendor/bootstrap/bootstrap.js',
+  '/vendor/momentjs/moment.js',
+  '/vendor/humanize-duration/humanize-duration.js',
+  // <!-- Fello main scripts -->
+  '/vendor/angular/angular.js',
+  '/vendor/angular-ui-router/angular-ui-router.js',
+  '/vendor/angular-timer/angular-timer.js',
+  '/vendor/i18next/i18next.js',
+  '/vendor/ng-i18next/ng-i18next.js',
+  <!-- Fello app scripts -->
+  '/js/common/app.js',
+  '/js/common/services/rtcapi.js',
+  '/js/clientroom/app.js',
+  '/js/clientroom/services/EventService.js',
+  '/js/clientroom/services/SnapshooterService.js',
+  '/js/clientroom/services/AvatarProvider.js',
+  '/js/clientroom/services/ChatService.js',
+  '/js/clientroom/directives/ChatDirective.js',
+  '/js/clientroom/controllers/LiveController.js'
+];
+
 
 
 // Client-side HTML templates are injected using the sources below
@@ -59,6 +113,12 @@ module.exports.cssFilesToInject = cssFilesToInject.map(function(path) {
   return '.tmp/public/' + path;
 });
 module.exports.jsFilesToInject = jsFilesToInject.map(function(path) {
+  return '.tmp/public/' + path;
+});
+module.exports.jsFilesToInjectDashboard = jsFilesToInjectDashboard.map(function(path) {
+  return '.tmp/public/' + path;
+});
+module.exports.jsFilesToInjectClientRoom = jsFilesToInjectClientRoom.map(function(path) {
   return '.tmp/public/' + path;
 });
 module.exports.templateFilesToInject = templateFilesToInject.map(function(path) {

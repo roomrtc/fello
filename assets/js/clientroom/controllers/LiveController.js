@@ -3,10 +3,11 @@
  */
 
 angular.module('fello.clientroom')
-  .controller('LiveController', ['$scope', '$filter', function ($scope, $filter) {
+  .controller('LiveController', ['$scope', '$sce', '$filter', 'rtcapi', function ($scope, $sce, $filter, RtcApi) {
 
     var initApp = function () {
 
+      $scope.RoomService = {};
       $scope.waitingClients = [];
       $scope.processingList = [];
       $scope.isDenied = false;
@@ -14,11 +15,13 @@ angular.module('fello.clientroom')
       $scope.agent = {};
       $scope.agentNameRequest = "";
       $scope.message = "";
+      $scope.streams = {};
 
       $scope.roomInfo = {};
       $scope.roomInfo.roomName = "fello.in_congtya";
       $scope.helper = {};
       $scope.helper.messageNotify = "Are you ready ? Automatically call an Agent in {{}} seconds";
+      $scope.state = "ready";
 
       var now = new Date();
 
@@ -51,14 +54,14 @@ angular.module('fello.clientroom')
       }
     }
 
-    var _loginSuccess = function (easyrtcid) {
-      $scope.me.easyrtcid = easyrtcid;
+    var _loginSuccess = function (rtcid) {
+      $scope.me.easyrtcid = rtcid;
       $scope.$apply();
     };
 
     var _loginFailure = function (errorCode, message) {
       console.log(errorCode + ": " + message);
-      easyrtc.showError(errorCode, message);
+      RtcApi.showError(errorCode, message);
       $scope.$apply();
     };
 
@@ -66,24 +69,25 @@ angular.module('fello.clientroom')
 
       var roomName = $scope.roomInfo.roomName;
 
-      easyrtc.setRoomOccupantListener(roomListener);
-      easyrtc.initMediaSource(function () {       // success callback
-          $scope.me.promptMessage = "AreYouReadyCall";
-          var selfVideo = document.getElementById("self");
-          easyrtc.setVideoObjectSrc(selfVideo, easyrtc.getLocalStream());
-          easyrtc.connect("fello.serverApp", _loginSuccess, _loginFailure);
-          $scope.$apply();
-        }, _loginFailure
-      );
+      RtcApi.setRoomOccupantListener(roomListener);
+      RtcApi.initMediaSource(function () {       // success callback
+        $scope.me.promptMessage = "AreYouReadyCall";
+        var selfVideo = document.getElementById("self");
+        RtcApi.setVideoObjectSrc(selfVideo, RtcApi.getLocalStream());
+        RtcApi.connect("fello.serverApp", _loginSuccess, _loginFailure);
+        $scope.$apply();
+      }, function (errorCode, errorText) {
 
-      //easyrtc.easyApp("fello.instantMessaging", "self", ["caller"], function (myId) {
-      //    console.log("My easyrtcid is " + myId);
+      });
+
+      //rtcApi.easyApp("fello.instantMessaging", "self", ["caller"], function (myId) {
+      //    console.log("My rtcid is " + myId);
       //});
-      easyrtc.setAcceptChecker(function (easyrtcid, acceptor) {
+      RtcApi.setAcceptChecker(function (rtcid, acceptor) {
         acceptor(true);
-        //if( easyrtc.idToName(easyrtcid) === 'Fred' ){
+        //if( rtcApi.idToName(rtcid) === 'Fred' ){
         //  acceptor(true);
-        //} else if( easyrtc.idToName(easyrtcid) === 'Barney' ){
+        //} else if( rtcApi.idToName(rtcid) === 'Barney' ){
         //  setTimeout( function() {
         //    acceptor(true, ['myOtherCam']); // myOtherCam presumed to a streamName
         //  }, 10000);
@@ -91,25 +95,30 @@ angular.module('fello.clientroom')
         //  acceptor(false);
         //}
       });
-      easyrtc.setStreamAcceptor(function (callerEasyrtcid, stream) {
+      RtcApi.setStreamAcceptor(function (callerRtcid, stream) {
         var video = document.getElementById('caller');
-        easyrtc.setVideoObjectSrc(video, stream);
+        // rtcApi.setVideoObjectSrc(video, stream);
+        // use objectURL to manage stream
+        var url = URL.createObjectURL(stream); //URL.revokeObjectURL(url);
+        var id = callerRtcid;
+        $scope.streams[id] = $sce.trustAsResourceUrl(url);
         $scope.me.inconversation = true;
-        $scope.agent.easyrtcid = callerEasyrtcid;
+        $scope.agent.easyrtcid = callerRtcid;
         $scope.$apply();
       });
 
-      easyrtc.setOnStreamClosed(function (callerEasyrtcid) {
-        if (document.getElementById('caller') != null) {
-          easyrtc.setVideoObjectSrc(document.getElementById('caller'), "");
-          $scope.me.inconversation = true;
-          delete $scope.agent.easyrtcid;
-          $scope.$apply();
-        }
+      RtcApi.setOnStreamClosed(function (callerRtcid) {
+        var id = callerRtcid;
+        var url = $scope.streams[id];
+        URL.revokeObjectURL(url);
+        $scope.me.inconversation = true;
+        delete $scope.agent.easyrtcid;
+        delete $scope.streams[id];
+        $scope.$apply();
       });
 
       // custom event
-      easyrtc.setServerListener(function (msgType, msgData, targeting) {
+      RtcApi.setServerListener(function (msgType, msgData, targeting) {
         switch (msgType) {
           case "clientDisconnect":
             console.log('Client disconnected');
@@ -122,6 +131,7 @@ angular.module('fello.clientroom')
             break;
           case "callDrop":
             if (msgData.easyrtcid == $scope.me.easyrtcid) {
+              RtcApi.leaveRoom(msgData.roomName);
               console.log('You are dropped by Admin !', msgData);
             }
             $scope.me.inconversation = false;
@@ -152,20 +162,19 @@ angular.module('fello.clientroom')
             console.log('test ok');
             break;
         }
-        console.log(msgType);
-        console.log(msgData);
-        console.log(targeting);
       });
     }
 
     $scope.call = function (agentNameRequest) {
       var roomName = $scope.roomInfo.roomName;
       // set the id is  not Agent
-      easyrtc.setRoomApiField(roomName, "isAgent", false);
-      easyrtc.setRoomApiField(roomName, "isDisplay", true);
-      easyrtc.setRoomApiField(roomName, "agentName", agentNameRequest);
-      easyrtc.joinRoom(roomName, null, function (roomName) {
+      // RtcApi.setRoomApiField(roomName, "isAgent", false);  // DONT NEED
+      // RtcApi.setRoomApiField(roomName, "isDisplay", true); // DONT NEED
+      RtcApi.setRoomApiField(roomName, "agentName", agentNameRequest);
+      RtcApi.setRoomApiField(roomName, "clientName", "clientName1");
+      RtcApi.joinRoom(roomName, null, function (roomName) {
         $scope.me.promptMessage = "PleaseWaitAccept";
+        $scope.me.inconversation = false;
         $scope.$apply();
         console.log("I'm now in room " + roomName);
 
@@ -179,8 +188,8 @@ angular.module('fello.clientroom')
 
     $scope.recall = function (callId) {
       // make call
-      easyrtc.call(callId, function (easyrtcid) {
-          console.log("completed call to " + easyrtcid);
+      RtcApi.call(callId, function (rtcid) {
+          console.log("completed call to " + rtcid);
         }, function (errorMessage) {
           console.log("err:" + errorMessage);
         }, function (accepted, bywho) {
@@ -199,7 +208,7 @@ angular.module('fello.clientroom')
         message: $scope.message
       };
 
-      easyrtc.sendServerMessage("chatMessage", msgData, function (msgType, msgData) {
+      RtcApi.sendServerMessage("chatMessage", msgData, function (msgType, msgData) {
         console.log("OK: ", msgData);
       }, function (errorCode, errorText) {
         console.log("error was " + errorText);

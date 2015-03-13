@@ -25,7 +25,7 @@ module.exports.bootstrap = function (cb) {
     , logLevel: "debug" //"debug"
     , logDateEnable: false
     , roomAutoCreateEnable: true
-    , roomDefaultEnable: false
+    , roomDefaultEnable: false // true --> fello Room supporter
     , updateCheckEnable: true
     , appDefaultName: "fello.serverApp"
     , roomDefaultName: "fello.in_company"
@@ -63,6 +63,9 @@ module.exports.bootstrap = function (cb) {
     var roomJoin = pub.events.defaultListeners.roomJoin;
     var roomLeave = pub.events.defaultListeners.roomLeave;
     var roomCreate = pub.events.defaultListeners.roomCreate;
+    var msgTypeSetRoomApiField  = pub.events.defaultListeners.msgTypeSetRoomApiField;
+
+    // onMsgTypeSetRoomApiField
 
     easyrtc.events.on('roomCreate', function (appObj, creatorConnectionObj, roomName, roomOptions, callback) {
       console.log('------>>>>> ROOM CREATE ' + roomName);
@@ -77,12 +80,12 @@ module.exports.bootstrap = function (cb) {
 
     easyrtc.events.on('disconnect', function (connectionObj, next) {
       socketCount--;
-      console.log('------>>>>> Disconnect from ', connectionObj.getEasyrtcid());
+      console.log('------>>>>> Disconnect from ', connectionObj && connectionObj.getEasyrtcid());
       return disconnect(connectionObj, next);
     });
 
     easyrtc.events.on('roomJoin', function (connectionObj, roomName, roomParameter, callback) {
-      console.log('------>>>>> ROOM JOIN for ', connectionObj.getEasyrtcid());
+      console.log('------>>>>> ROOM JOIN for ', connectionObj && connectionObj.getEasyrtcid());
       // get Room object --> agents --> send notify them
       connectionObj.getApp().room(roomName, function (err, roomObj) {
 
@@ -143,8 +146,13 @@ module.exports.bootstrap = function (cb) {
 
     easyrtc.events.on('roomLeave', function (connectionObj, roomName, next) {
 
-      console.log('------>>>>> ROOM LEAVE for ', connectionObj || connectionObj.getEasyrtcid());
+      console.log('------>>>>> ROOM LEAVE for ', connectionObj && connectionObj.getEasyrtcid());
       return roomLeave(connectionObj, roomName, next);
+    });
+
+    easyrtc.events.on('msgTypeSetRoomApiField', function (connectionObj, roomApiFieldObj, socketCallback, next) {
+      console.log('------>>>>> SET ROOM API FIELD for ', connectionObj && connectionObj.getEasyrtcid());
+      return msgTypeSetRoomApiField(connectionObj, roomApiFieldObj, socketCallback, next);
     });
 
     // Message handle waiting list (join, leave)
@@ -243,11 +251,11 @@ module.exports.bootstrap = function (cb) {
                     connectionRoomObj.leaveRoom(next);
                     socketCallback({
                             msgType: 'callDrop',
-                            msgData: {message: "User leave out of room " + roomName, error: err}
+                            msgData: {message: "User leave out of room " + roomName, roomName: roomName, error: err}
                           });
                   } else {
                     console.log("Error drop user from room. ", err);
-                    socketCallback({msgType: 'callDrop', msgData: {message: "Can't kick user", error: err}});
+                    socketCallback({msgType: 'callDrop', msgData: {message: "Can't kick user", roomName: roomName, error: err}});
                     next(null);
                   }
                 });
@@ -274,6 +282,7 @@ module.exports.bootstrap = function (cb) {
                       socketid: connectionObj.socket.id
                       , easyrtcid: dropEasyrtcid
                       , message: "You are dropped by Admin"
+                      , roomName: roomName
                     }
                   }, null,
                   function (err) {
