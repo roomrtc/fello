@@ -42,7 +42,7 @@ module.exports.connections = {
   ***************************************************************************/
   felloinDb: {
     adapter: 'sails-mysql',
-    host: 'localhost',
+    host: '127.0.0.1',
     user: 'felloin',
     password: 'felloin',
     database: 'felloin'

@@ -1,103 +1,105 @@
 <div class="row animated fadeInRight">
-  <div class="col-xs-offset-1 col-xs-5">
+  <div>
+    <div class="row" ng-if="IsNotAllowAccessMedia">
+      <h2 style="color: white;">Please allow us to use your Camera and Microphone. <br/>
+        After that enjoy your conversation!</h2>
 
-    <div class="ibox float-e-margins">
-      <div class="ibox-title">
-        <h5><i class="fa fa-headphones"></i> Your Preview</h5>
-
-        <div class="ibox-tools hidden-xs">
-          <span class="label label-primary-light">10:13m</span>
-        </div>
-      </div>
-      <div class="ibox-content">
-        <div>
-          <video id="self" width="300" height="200" muted="muted"></video>
-        </div>
+      <div>
+        <p>Insert an image to guide user!</p>
       </div>
     </div>
 
-  </div>
-  <div class="col-xs-5">
-    <div class="ibox float-e-margins">
-
-      <div class="ibox-title">
-        <h5><i class="fa fa-headphones"></i> Supporter</h5>
-      </div>
-      <div class="ibox-content">
-
+    <div id="remotes">
+      <div class="videocontainer focusable" ng-repeat="(id, stream) in streams" splitscreen="true">
         <div>
-          <!--initializing...-->
-          <div ng-switch on="me.promptMessage">
-            <div ng-switch-when="AreYouReadyCall">
-              <h2>
-                <timer countdown="10" interval="1000" finish-callback="call(null)">Are you ready ? Automatically call
-                  after {{seconds}} second{{secondsS}}
-                </timer>
-              </h2>
-              <div class="row">
-                <div class="col-sm-12">
-                  <button class="btn btn-success" ng-click="call(agentNameRequest)">Call now !</button>
-                  &nbsp;
-                  <button class="btn btn-danger" ng-click="stopTimer()">I'm not ready</button>
-                </div>
-              </div>
+          <video id="{{id}}" class="client" width="300" height="200" src="{{stream}}"
+                 ng-click="handleVideoClick($event)" ng-style="shuffle()" resize autoplay="true"></video>
+        </div>
+      </div>
+      <div style="text-align: center" ng-if="_.size(streams) == 1" splitscreen="_.size(streams) == 1">
+        <!--START PROMPT USER-->
+        <div ng-switch on="me.promptMessage">
+          <div ng-switch-when="AreYouReadyCall">
+            <h2 ng-if="::readyInfo()">
+              <timer countdown="9" interval="1000" finish-callback="call(null)">Are you ready ? Automatically call
+                after {{seconds}} second{{secondsS}}
+              </timer>
+            </h2>
+            <div class="row">
+              <form name="frmUserInfo" class="frmUserInfo cf">
+                <ul>
+                  <li><label style="text-align: left" for="username">Name</label>
+                    <input type="text" name="username" id="username" ng-model="me.name" placeholder="What's your name ?"
+                           ng-minlength="2" ng-maxlength="30" required></li>
+                  <li><label style="text-align: left"  for="useremail">Email</label>
+                    <input type="email" name="useremail" id="useremail" ng-model="me.email"
+                           placeholder="yourname@email.com" ng-minlength="5" ng-maxlength="30" required></li>
+                  </ul><ul>
+                  <li>
+                    <button class="btn btn-success" ng-click="call(agentCallId)"
+                            ng-disabled="frmUserInfo.$invalid">Call now !
+                    </button>
+                    &nbsp;
+                    <button ng-if="::readyInfo()" class="btn btn-danger" ng-click="stopTimer()">I'm not ready</button>
+                  </li>
+                </ul>
+                <div></div>
+              </form>
             </div>
-            <div ng-switch-when="DoYouWantRecall">
-              <div class="row">
-                <h2>Your call has been finished! Do you want to recall ?</h2>
+          </div>
+          <div ng-switch-when="DoYouWantRecall">
+            <div class="row">
+              <h2>Your call has been finished! Do you want to recall ?</h2>
 
-                <div>
-                  <button class="btn btn-success" ng-click="call(agentNameRequest)">Recall</button>
-                </div>
+              <div>
+                <button class="btn btn-success" ng-click="call(agentCallId)">Recall</button>
               </div>
             </div>
-            <div ng-switch-when="YouAreDenied">
-              <div class="row">
-                <h2>You are denied by Admin! Do you want to recall ?</h2>
-                <div>
-                  <button class="btn btn-success" ng-click="call(agentNameRequest)">Recall</button>
-                </div>
-              </div>
-            </div>
-            <div ng-switch-when="YouAreBlocked">
-              <div class="row">
-                <h2>Sorry! You are blocked by Admin for 1 week. Now you can't do call.</h2>
-              </div>
-            </div>
-            <div ng-switch-when="PleaseAllowAccessMedia">
-              <div class="row">
-                <h2>We do not have permission access your Media Device. <br/> Please allow us to use your Camera and Microphone. <br/> After that enjoy your conversation!</h2>
+          </div>
+          <div ng-switch-when="YouAreDenied">
+            <div class="row">
+              <h2>You are denied by Admin! Do you want to recall ?</h2>
 
-                <div>
-                  <p>Insert an image to guide user!</p>
-                </div>
-              </div>
-
-            </div>
-            <div ng-switch-when="PleaseWaitAccept">
-              <div class="row">
-                <div>
-                  <h2 ng-show="!me.inconversation">Please wait agent accept your call...</h2>
-                  <div ng-repeat="(id, stream) in streams" splitscreen="true">
-                    <video class="agent" width="300" height="200" src="{{stream}}" autoplay="true"></video>
-                  </div>
-                  <div id="otherClients">
-                  </div>
-                </div>
+              <div>
+                <button class="btn btn-success" ng-click="call(agentCallId)">Recall</button>
               </div>
             </div>
-            <div ng-switch-default>
-              <div class="row">
-                <h2>Please allow us to use your Camera and Microphone. <br/> After that enjoy your conversation!</h2>
+          </div>
+          <div ng-switch-when="YouAreBlocked">
+            <div class="row">
+              <h2>Sorry! You are blocked by Admin for 1 week. Now you can't do call.</h2>
+            </div>
+          </div>
+          <div ng-switch-when="PleaseAllowAccessMedia">
+            <div class="row">
+              <h2>We do not have permission access your Media Device. <br/> Please allow us to use your Camera and
+                Microphone. <br/> After that enjoy your conversation!</h2>
 
-                <div>
-                  <p>Insert an image to guide user!</p>
-                </div>
+              <div>
+                <p>Insert an image to guide user!</p>
+              </div>
+            </div>
+
+          </div>
+          <div ng-switch-when="PleaseWaitAccept">
+            <div class="row">
+              <h2 ng-show="_.size(streams) < 2">Please wait agent accept your call...</h2>
+            </div>
+          </div>
+          <div ng-switch-default>
+            <div class="row">
+              <h2>Please allow us to use your Camera and Microphone. <br/> After that enjoy your conversation!</h2>
+
+              <div>
+                <p>Insert an image to guide user!</p>
               </div>
             </div>
           </div>
         </div>
+        <!--END PROMPT USER-->
+        <p class="waiting" ng-i18next="">Share to someone by sending the link to them!</p>
 
+        <p class="invite">http://fello.in/{{roomName}}</p>
       </div>
     </div>
 

@@ -19,6 +19,32 @@ var cssFilesToInject = [
   'styles/**/*.css'
 ];
 
+var cssFilesToInjectHomepage = [
+  '/vendor/bootstrap/bootstrap.css',
+  '/styles/common.css',
+  '/styles/extra/animate.css',
+  '/styles/homepage.css',
+  '/styles/importer.css',
+  '/styles/responsive.css'
+];
+
+var cssFilesToInjectDashboard = [
+  '/styles/common.css',
+  '/styles/extra/animate.css',
+  '/css/dashboard/bootstrap.min.css',
+  '/css/dashboard/dashboard.css',
+  '/css/dashboard/sticky.css',
+  '/css/dashboard/custom.css'
+];
+
+var cssFilesToInjectClientRoom = [
+  '/styles/common.css',
+  '/styles/extra/animate.css',
+  '/css/clientroom/livingroom.css',
+  '/css/clientroom/fluidGrid.css',
+  '/css/clientroom/chatbox.css'
+];
+
 
 // Client-side javascript files to inject in order
 // (uses Grunt-style wildcard/glob/splat expressions)
@@ -50,10 +76,21 @@ var jsFilesToInjectDashboard = [
   '/socket.io/socket.io.js',
   '/vendor/angular/angular.js',
   '/vendor/angular-ui-router/angular-ui-router.js',
+  '/vendor/angular-sanitize/angular-sanitize.js',
+  '/vendor/angular-cookies/angular-cookies.js',
+  //'/vendor/angular-youtube-mb/angular-youtube-embed.js',
+  '/vendor/angular-bind-html-compile/angular-bind-html-compile.js',
   '/vendor/ng-elif/elif.js',
   <!-- Fello app scripts -->
   '/js/common/app.js',
   '/js/common/services/rtcapi.js',
+  '/js/common/services/lodash.js',
+  '/js/common/services/guid.js',
+  '/js/common/services/utils.js',
+  '/js/common/services/memo.js',
+  '/js/common/services/soundEffectManager.js',
+  '/js/common/services/sounds.js',
+  //'/js/common/filters/mediaShareFilter.js',
   '/js/dashboard/app.js',
   '/js/dashboard/filters/TimeAgoFilter.js',
   '/js/dashboard/services/CallService.js',
@@ -74,16 +111,33 @@ var jsFilesToInjectClientRoom = [
   // <!-- Fello main scripts -->
   '/vendor/angular/angular.js',
   '/vendor/angular-ui-router/angular-ui-router.js',
+  '/vendor/angular-sanitize/angular-sanitize.js',
+  '/vendor/angular-cookies/angular-cookies.js',
+  //'/vendor/angular-youtube-mb/angular-youtube-embed.js',
+  '/vendor/angular-bind-html-compile/angular-bind-html-compile.js',
   '/vendor/angular-timer/angular-timer.js',
   '/vendor/i18next/i18next.js',
   '/vendor/ng-i18next/ng-i18next.js',
   <!-- Fello app scripts -->
   '/js/common/app.js',
   '/js/common/services/rtcapi.js',
+  '/js/common/services/lodash.js',
+  '/js/common/services/guid.js',
+  '/js/common/services/utils.js',
+  '/js/common/services/memo.js',
+  '/js/common/services/fluidGrid.js',
+  '/js/common/services/soundEffectManager.js',
+  '/js/common/services/sounds.js',
+  '/js/common/services/serverSocket.js',
+  '/js/common/services/serverSocketConfig.js',
+  //'/js/common/filters/mediaShareFilter.js',
+  '/js/common/values/protocol.js',
+  '/js/common/values/State.js',
   '/js/clientroom/app.js',
   '/js/clientroom/services/EventService.js',
   '/js/clientroom/services/SnapshooterService.js',
   '/js/clientroom/services/AvatarProvider.js',
+  '/js/clientroom/services/RoomState.js',
   '/js/clientroom/services/ChatService.js',
   '/js/clientroom/directives/ChatDirective.js',
   '/js/clientroom/controllers/LiveController.js'
@@ -110,6 +164,12 @@ var templateFilesToInject = [
 // (i.e. where the other Grunt tasks spit them out, or in some cases, where
 // they reside in the first place)
 module.exports.cssFilesToInject = cssFilesToInject.map(function(path) {
+  return '.tmp/public/' + path;
+});
+module.exports.cssFilesToInjectDashboard = cssFilesToInjectDashboard.map(function(path) {
+  return '.tmp/public/' + path;
+});
+module.exports.cssFilesToInjectClientRoom = cssFilesToInjectClientRoom.map(function(path) {
   return '.tmp/public/' + path;
 });
 module.exports.jsFilesToInject = jsFilesToInject.map(function(path) {

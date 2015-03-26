@@ -1,25 +1,33 @@
 /**
  * Created by Vunb on 16/2/2015.
  */
-angular.module("videoconference").factory("RoomState", [function () {
-  var roomState = function () {
-    this.resetState();
-  };
-  roomState.prototype.resetClaimState = function () {
-    this.isSelfOwner = false, this.isClaimed = false, this.hasOwnerId = false;
-  };
-  roomState.prototype.resetState = function () {
-    this.selfId = "",
-    this.clients = [],
-    this.knockers = [],
-    this.roomData = {},
-    this.roomName = "",
-    this.selfStream = void 0,
-    this.backgroundImageUrl = void 0,
-    this.isSelfMember = !1,
-    this.isMigrated = !1,
-    this.localClient = void 0,
-    this.resetClaimState();
-  };
-  return new roomState();
-}]);
+angular.module("fello.clientroom").factory("RoomState", [
+  '$state',
+  '$stateParams',
+  function ($state, $stateParams) {
+    var roomState = {};
+    roomState.resetClaimState = function () {
+      this.isSelfOwner = false;
+      this.isClaimed = false;
+      this.hasOwnerId = false;
+    };
+    roomState.resetState = function () {
+      this.selfId = "",
+        this.agentId = "",
+        this.clients = [],
+        this.knockers = [],
+        this.roomData = {},
+        this.roomName = $stateParams.roomName,
+        this.serverApp = "fello.serverApp",
+        this.selfStream = void 0,
+        this.backgroundImageUrl = void 0,
+        this.isSelfMember = false,
+        this.isMigrated = false,
+        this.localClient = void 0,
+        this.resetClaimState();
+    };
+
+    // reset state
+    roomState.resetState();
+    return roomState;
+  }]);

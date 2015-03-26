@@ -1,7 +1,7 @@
 /**
  * Created by Vunb on 18/2/2015.
  */
-angular.module("videoconference").directive("videoView", ["$timeout", function ($timeout) {
+angular.module("fello.clientroom").directive("videoView", ["$timeout", function ($timeout) {
   return {
     templateUrl: "/templates/partials/video-view.html",
     restrict: "E",

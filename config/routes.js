@@ -46,18 +46,20 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-  , '/dashboard/*': {
+  , '/dashboard*': {
     view: 'dashboard'
   }
 
-  , '/livingroom/*': {
-    view: 'clientroom'
+  , '/*': {
+    view: 'clientroom',
+    skipAssets: true,
+    skipRegex: /^\/api\/.*$/
   }
-  , '/clientroom/*': {
-    view: 'clientroom'
+  , '/about/*': {
+    view: 'about'
   }
   , '/help/*': {
-    view: 'clientroom'
+    view: 'help'
   }
 
 };

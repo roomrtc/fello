@@ -1,7 +1,7 @@
 /**
  * Created by Vunb on 17/2/2015.
  */
-var app = angular.module("fello.common", []);
+var app = angular.module("fello.common", ['ngCookies']);
 
 app.filter("timestamp", function () {
   return function (time) {

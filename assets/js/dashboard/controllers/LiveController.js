@@ -2,8 +2,8 @@
  * Created by Vunb on 1/2/2015.
  */
 angular.module('fello.dashboard')
-  .controller('LiveController', ['$scope', '$filter', '$timeout', '$compile', 'rtcapi', 'CallService',
-    function ($scope, $filter, $timeout, $compile, rtcApi, callService) {
+  .controller('LiveController', ['$scope', '$filter', '$timeout', '$compile', 'rtcapi', 'CallService', 'utils',
+    function ($scope, $filter, $timeout, $compile, rtcApi, callService, utils) {
 
       var initApp = function () {
 
@@ -13,11 +13,11 @@ angular.module('fello.dashboard')
         $scope.dialogistList = {};
         $scope.me = {};
         $scope.me.easyrtcid = "fetching ...";
-        $scope.me.roomName = "fello.in_congtya";
+        $scope.me.roomName = "bkindex"; // "fello.in_congtya";
         $scope.me.name = "Vu Bao Nhu";
 
         $scope.roomInfo = {};
-        $scope.roomInfo.roomName = "fello.in_congtya";
+        $scope.roomInfo.roomName = "bkindex";//"fello.in_congtya";
         $scope.waitingCount = 0;
         $scope.proccessingCount = 0;
 
@@ -76,14 +76,15 @@ angular.module('fello.dashboard')
           var peer = peers[prop];
           var callId = peer.easyrtcid;
           var client = {};
-          client.name = callId;
-          client.email = callId;
+          client.name = utils.getFieldValue(peer["apiField"], "clientName") || callId;
+          client.email = utils.getFieldValue(peer["apiField"], "clientEmail") || callId;;
           client.callId = callId;
           client.easyrtcid = callId;
           client.roomJoinTime = peer.roomJoinTime;
           client.previewMsg = {};
-          client.isAgent = peer["apiField"] && peer["apiField"]["isAgent"] && peer["apiField"]["isAgent"]["fieldValue"];
-          client.dialogist = peer["apiField"] && peer["apiField"]["dialogist"] && peer["apiField"]["dialogist"]["fieldValue"];
+          client.messages = [];
+          client.isAgent = utils.getFieldValue(peer["apiField"], "isAgent");  //&& peer["apiField"]["isAgent"] && peer["apiField"]["isAgent"]["fieldValue"];
+          client.dialogist = utils.getFieldValue(peer["apiField"], "dialogist"); // peer["apiField"] && peer["apiField"]["dialogist"] && peer["apiField"]["dialogist"]["fieldValue"];
 
           if (client.isAgent) {
             agents[prop] = client;
@@ -100,8 +101,8 @@ angular.module('fello.dashboard')
           }
         }
 
-        console.log("room: " + roomName + ", agents: " + JSON.stringify(agents));
-        console.log("room: " + roomName + ", clients: " + JSON.stringify(clients));
+        //console.log("room: " + roomName + ", agents: " + JSON.stringify(agents));
+        //console.log("room: " + roomName + ", clients: " + JSON.stringify(clients));
 
         // remove client out from waiting list --> to processing list
         for (var id in dialogists) {
@@ -127,10 +128,10 @@ angular.module('fello.dashboard')
 
       var _loginSuccess = function (rtcid) {
         var roomName = $scope.roomInfo.roomName;
-        // set the id is  not Agent
-        // set the id is need show
-        rtcApi.setRoomApiField(roomName, "isAgent", true);
-        rtcApi.setRoomApiField(roomName, "isDisplay", true);
+        //// set the id is  not Agent
+        //// set the id is need show
+        //rtcApi.setRoomApiField(roomName, "isAgent", true);
+        //rtcApi.setRoomApiField(roomName, "isDisplay", true);
         $scope.me.easyrtcid = rtcid;
         //$scope.me.name = rtcid;
         $scope.$apply();
@@ -152,7 +153,20 @@ angular.module('fello.dashboard')
         rtcApi.initMediaSource(function () {       // success callback
             var selfVideo = document.getElementById("self");
             rtcApi.setVideoObjectSrc(selfVideo, rtcApi.getLocalStream());
-            rtcApi.connect("fello.serverApp", _loginSuccess, _loginFailure);
+            rtcApi.connect("fello.serverApp", function (rtcid) {
+              // set the id is  not Agent
+              rtcApi.setRoomApiField(roomName, "isAgent", true);
+              rtcApi.setRoomApiField(roomName, "clientName", "agentName1");
+              rtcApi.joinRoom(roomName, null, function (roomName) {
+
+                console.log("I'm now in room " + roomName);
+
+              }, function (errorCode, errorText, roomName) {
+
+                console.log("had problems joining " + roomName);
+              });
+              _loginSuccess(rtcid);
+            }, _loginFailure);
           }, _loginFailure
         );
 
@@ -200,17 +214,44 @@ angular.module('fello.dashboard')
           delete $scope.me.dialogist;
         });
 
-        // set the id is  not Agent
-        rtcApi.setRoomApiField(roomName, "isAgent", true);
-        rtcApi.setRoomApiField(roomName, "isDisplay", true);
-        rtcApi.joinRoom(roomName, null, function (roomName) {
 
-          console.log("I'm now in room " + roomName);
+        function addToConversation(who, msgType, content, targeting) {
+          // Escape html special characters, then add linefeeds.
+          if (!content || !content.text) {
+            //content = "**no body**";
+            return;
+          }
+          var message = content.text;
+          message = message.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+          message = message.replace(/\n/g, '<br />');
+          var targetingStr = "";
+          if (targeting) {
+            if (targeting.targetEasyrtcid) {
+              targetingStr += "user=" + targeting.targetEasyrtcid;
+            }
+            if (targeting.targetRoom) {
+              targetingStr += " room=" + targeting.targetRoom;
+            }
+            if (targeting.targetGroup) {
+              targetingStr += " group=" + targeting.targetGroup;
+            }
+          }
+          //chatStorage.entries.push(new parseMessage(content));
+          //$rootScope.$broadcast("new_chat_message", content);
+          var client = $scope.waitingClients[who];
+          if (client) {
+            $scope.waitingClients[who].messages = $scope.waitingClients[who].messages || [];
+            $scope.waitingClients[who].messages.push({message: message});
+            $scope.$apply();
+          }
 
-        }, function (errorCode, errorText, roomName) {
+        }
 
-          console.log("had problems joining " + roomName);
-        });
+        function peerListener(who, msgType, content, targeting) {
+          addToConversation(who, msgType, content, targeting);
+        }
+
+        rtcApi.setPeerListener(peerListener);
 
         // custom event
         rtcApi.setServerListener(function (msgType, msgData, targeting) {

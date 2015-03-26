@@ -208,6 +208,36 @@ module.exports = function(grunt) {
 			}
 		},
 
+    devStylesDashboard: {
+      options: {
+        startTag: '<!--DASHBOARD STYLES-->',
+        endTag: '<!--DASHBOARD STYLES END-->',
+        fileTmpl: '<link rel="stylesheet" href="%s">',
+        appRoot: '.tmp/public',
+        verifyExists: false
+      },
+      files: {
+        '.tmp/public/**/*.html': require('../pipeline').cssFilesToInjectDashboard,
+        'views/**/*.html': require('../pipeline').cssFilesToInjectDashboard,
+        'views/**/*.ejs': require('../pipeline').cssFilesToInjectDashboard
+      }
+    },
+
+    devStylesClientRoom: {
+      options: {
+        startTag: '<!--CLIENTROOM STYLES-->',
+        endTag: '<!--CLIENTROOM STYLES END-->',
+        fileTmpl: '<link rel="stylesheet" href="%s">',
+        appRoot: '.tmp/public',
+        verifyExists: false
+      },
+      files: {
+        '.tmp/public/**/*.html': require('../pipeline').cssFilesToInjectClientRoom,
+        'views/**/*.html': require('../pipeline').cssFilesToInjectClientRoom,
+        'views/**/*.ejs': require('../pipeline').cssFilesToInjectClientRoom
+      }
+    },
+
 		devStylesRelative: {
 			options: {
 				startTag: '<!--STYLES-->',

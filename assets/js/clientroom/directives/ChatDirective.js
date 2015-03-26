@@ -16,9 +16,15 @@ angular.module("fello.clientroom").directive("chat", function () {
       scope.focusChatInputField = function () {
         "Range" !== window.getSelection().type && element.find("#chatInputField").focus()
       }, scope.updateChatWindow = function (b) {
-        var c = chatMsgDiv.height(), e = chatMsgDiv.scrollTop(), f = chatMsgDiv[0].scrollHeight, g = 14, msgHeight = 50;
+        var c = chatMsgDiv.height()
+          , e = chatMsgDiv.scrollTop()
+          , f = chatMsgDiv[0].scrollHeight
+          , g = 14
+          , msgHeight = 50;
         b && b.messageElemHeight && (msgHeight = b.messageHeight);
-        var i = b && b.isOwnChatMessage, j = b && b.isHistoricalMessages, k = i || j || g + 2 * msgHeight > f - c - e;
+        var i = b && b.isOwnChatMessage
+          , j = b && b.isHistoricalMessages
+          , k = i || j || g + 2 * msgHeight > f - c - e;
         return k ? void scope.scrollToBottom() : void(scope.hasUnreadMessages = !0)
       }, scope.scrollToBottom = function () {
         scope.hasUnreadMessages = false;
@@ -31,26 +37,31 @@ angular.module("fello.clientroom").directive("chat", function () {
       }, 150);
       chatMsgDiv.scroll(e)
     },
-    controller: ["$scope", "ChatService", "$timeout", "$document", "$rootScope", "$window", "Event",
-      function ($scope, Chat, $timeout, $document, $rootScope, $window, Event) {
-        function l() {
-          var b;
-          $scope.chatActive && (b = "calc(" + angular.element(".video-wrapper").css("height") + " - 20px)"), $scope.chatWrapperStyle["max-height"] = b
-        }
-
-        function m() {
-          $scope.chatActive = !$scope.chatActive, $scope.chatWrapperStyle.height = $scope.chatActive ? wrapperWidth : height, l()
-        }
-
+    controller: ["$scope", "ChatService", "$timeout", "$document", "$rootScope", "$window", "Event", "serverSocket", "rtcapi"
+      , function ($scope, Chat, $timeout, $document, $rootScope, $window, Event, serverSocket, RtcApi) {
+        var height = "3em", wrapperHeight = 140, wrapperWidth = 170;
         $scope.chatActive = false
           , $scope.hasClosedChat = false
           , $scope.numberOfUnreadMessages = 0
           , $scope.messages = Chat.entries
           , $scope.hasUnreadMessages = false;
-        var height = "3em", wrapperHeight = 140, wrapperWidth = 170;
-        $scope.chatWrapperStyle = {height: height}, $scope.$watch("windowHeight", function () {
-          l()
-        }), $window.addEventListener("beforeunload", function (b) {
+        $scope.chatWrapperStyle = {height: height};
+
+        function setMaxHeight() {
+          var maxHeight;
+          $scope.chatActive && (maxHeight = "calc(" + angular.element(".video-wrapper").css("height") + " - 20px)"), $scope.chatWrapperStyle["max-height"] = maxHeight
+        }
+
+        function setHeight() {
+          $scope.chatActive = !$scope.chatActive;
+          $scope.chatWrapperStyle.height = $scope.chatActive ? wrapperWidth : height;
+          setMaxHeight()
+        }
+
+        $scope.$watch("windowHeight", function () {
+          setMaxHeight()
+        });
+        $window.addEventListener("beforeunload", function (b) {
           if ($scope.message && $scope.message.length > 0) {
             var text = $window.i18n.t("You have not sent your last chat message yet.");
             return (b || $window.event).returnValue = text, text
@@ -71,16 +82,19 @@ angular.module("fello.clientroom").directive("chat", function () {
         $scope.$watch("numberOfUnreadMessages", function (newValue) {
           return 0 === newValue ? void($document[0].title = x) : void($document[0].title = "(" + newValue + ") " + x)
         });
-        $rootScope.$on("new_chat_message", function () {
-          $scope.playNotificationSound(), $scope.hasClosedChat || $scope.chatActive || (m(), $timeout(function () {
-            $scope.scrollToBottom()
-          })), (v || !$scope.chatActive) && $scope.numberOfUnreadMessages++, $timeout(function () {
+        $rootScope.$on("new_chat_message", function (event, args) {
+          $scope.playNotificationSound();
+          $scope.hasClosedChat || $scope.chatActive || (setHeight(), $timeout(function () {
+            $scope.scrollToBottom();
+          }));
+          (v || !$scope.chatActive) && $scope.numberOfUnreadMessages++;
+          $timeout(function () {
             var b = angular.element("#chat-messages article.message").last().height();
-            $scope.updateChatWindow({messageHeight: b})
+            $scope.updateChatWindow({messageHeight: b, isOwnChatMessage: args.isOwnChatMessage})
           })
         });
         $rootScope.$on("chat_history_updated", function () {
-          $scope.chatActive || m(), $timeout(function () {
+          $scope.chatActive || setHeight(), $timeout(function () {
             $scope.updateChatWindow({isHistoricalMessages: !0})
           })
         });
@@ -89,12 +103,12 @@ angular.module("fello.clientroom").directive("chat", function () {
           $scope.handleManualChatToggle();
         };
         $scope.handleKeydownEvent = function (event) {
-          27 === event.which && m()
+          27 === event.which && setHeight()
         };
         $scope.handleManualChatToggle = function () {
           !$scope.hasClosedChat && $scope.chatActive && ($scope.hasClosedChat = !0);
           $scope.chatActive ? angular.element("#chat-message-box-input").blur() : ($scope.numberOfUnreadMessages = 0, $scope.updateChatWindow(), angular.element("#chat-message-box-input").focus());
-          m();
+          setHeight();
           $timeout(function () {
             $scope.scrollToBottom()
           })
@@ -104,9 +118,12 @@ angular.module("fello.clientroom").directive("chat", function () {
           !$scope.chatActive && $scope.handleManualChatToggle();
         };
         $scope.sendMessage = function () {
-          $scope.chatActive || m(), Chat.sendMessage(this.message), this.message = "", $timeout(function () {
-            $scope.updateChatWindow({isOwnChatMessage: !0})
-          }, 0)
+          $scope.chatActive || setHeight();
+          Chat.sendMessage(this.message);
+          this.message = "";
+          //$timeout(function () {
+          //  $scope.updateChatWindow({isOwnChatMessage: true})
+          //}, 0)
         };
         $scope.adjustChatHeight = function (b) {
           wrapperWidth += b, wrapperHeight > wrapperWidth || ($scope.$apply(function () {
@@ -119,10 +136,12 @@ angular.module("fello.clientroom").directive("chat", function () {
         $scope.startMediaShare = function (a) {
           //$rootScope.$broadcast(Event.MEDIA_SHARE, {url: a}), serverSocket.emit(protocol.req.SHARE_MEDIA, {url: a})
         };
-        //$scope.isConnected = serverSocket.isConnected.bind(serverSocket)
-        $scope.isConnected = function () {
-          return true;
-        }
+        $scope.isConnected = serverSocket.isConnected.bind(serverSocket);
+        //$scope.isConnected = function () {
+        //  return io.connect().socket.connected;
+        //}
+
+
       }]
   }
 });

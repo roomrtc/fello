@@ -1,68 +1,4 @@
 <div id="container" ng-app="fello.clientroom">
-  <nav class="navbar navbar-static-top animated" role="navigation" style="margin-bottom: 0">
-    <div class="navbar-header">
-      <a class="navbar-minimalize minimalize-styl-2 btn btn-primary no-hide" href="#"><i
-          class="fa fa-info-circle fa-2x"></i>
-      </a>
-    <span class="m-r-sm text-muted welcome-message minimalize-styl-2">You are in Candy Store Support Room.<br/>Permalink: <a
-        href="http://fello.in/candy-store">fello.in/candy-store</a></span>
-      <span class="minimalize-styl-2">Hơ qua thì xuất header-toolbar, info icon luôn xuất hiện.</span>
-    </div>
-    <ul class="nav navbar-top-links navbar-right">
-      <li>
-        <span class="m-r-sm text-muted welcome-message">Howdy, Admin.</span>
-      </li>
-      <li class="dropdown">
-        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-          <i class="fa fa-bell"></i> <span class="label label-primary">8</span>
-        </a>
-        <ul class="dropdown-menu dropdown-alerts">
-          <li>
-            <a href="mailbox.html">
-              <div>
-                <i class="fa fa-envelope fa-fw"></i> You have 16 messages
-                <span class="pull-right text-muted small">4 minutes ago</span>
-              </div>
-            </a>
-          </li>
-          <li class="divider"></li>
-          <li>
-            <a href="profile.html">
-              <div>
-                <i class="fa fa-twitter fa-fw"></i> 3 New Followers
-                <span class="pull-right text-muted small">12 minutes ago</span>
-              </div>
-            </a>
-          </li>
-          <li class="divider"></li>
-          <li>
-            <a href="grid_options.html">
-              <div>
-                <i class="fa fa-upload fa-fw"></i> Server Rebooted
-                <span class="pull-right text-muted small">4 minutes ago</span>
-              </div>
-            </a>
-          </li>
-          <li class="divider"></li>
-          <li>
-            <div class="text-center link-block">
-              <a href="notifications.html">
-                <strong>See All Alerts</strong>
-                <i class="fa fa-angle-right"></i>
-              </a>
-            </div>
-          </li>
-        </ul>
-      </li>
-
-      <li>
-        <a href="login.html">
-          <i class="fa fa-sign-out"></i> Exit
-        </a>
-      </li>
-    </ul>
-
-  </nav>
 
   <div class="wrapper wrapper-content">
 
@@ -143,6 +79,9 @@
 
 <script type="text/javascript" src="/easyrtc/easyrtc.js"></script>
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<!-- Include YT library and this directive -->
+<!--<script src="https://www.youtube.com/iframe_api"></script>-->
+<!--<script src="angular-youtube-embed.js"></script>-->
 
 <!--CLIENTROOM SCRIPTS-->
 <script src="/vendor/jquery/jquery.js"></script>
@@ -152,15 +91,30 @@
 <script src="/vendor/humanize-duration/humanize-duration.js"></script>
 <script src="/vendor/angular/angular.js"></script>
 <script src="/vendor/angular-ui-router/angular-ui-router.js"></script>
+<script src="/vendor/angular-sanitize/angular-sanitize.js"></script>
+<script src="/vendor/angular-cookies/angular-cookies.js"></script>
+<script src="/vendor/angular-bind-html-compile/angular-bind-html-compile.js"></script>
 <script src="/vendor/angular-timer/angular-timer.js"></script>
 <script src="/vendor/i18next/i18next.js"></script>
 <script src="/vendor/ng-i18next/ng-i18next.js"></script>
 <script src="/js/common/app.js"></script>
 <script src="/js/common/services/rtcapi.js"></script>
+<script src="/js/common/services/lodash.js"></script>
+<script src="/js/common/services/guid.js"></script>
+<script src="/js/common/services/utils.js"></script>
+<script src="/js/common/services/memo.js"></script>
+<script src="/js/common/services/fluidGrid.js"></script>
+<script src="/js/common/services/soundEffectManager.js"></script>
+<script src="/js/common/services/sounds.js"></script>
+<script src="/js/common/services/serverSocket.js"></script>
+<script src="/js/common/services/serverSocketConfig.js"></script>
+<script src="/js/common/values/protocol.js"></script>
+<script src="/js/common/values/State.js"></script>
 <script src="/js/clientroom/app.js"></script>
 <script src="/js/clientroom/services/EventService.js"></script>
 <script src="/js/clientroom/services/SnapshooterService.js"></script>
 <script src="/js/clientroom/services/AvatarProvider.js"></script>
+<script src="/js/clientroom/services/RoomState.js"></script>
 <script src="/js/clientroom/services/ChatService.js"></script>
 <script src="/js/clientroom/directives/ChatDirective.js"></script>
 <script src="/js/clientroom/controllers/LiveController.js"></script>

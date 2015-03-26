@@ -24,7 +24,7 @@
             </div>
             <article ng-switch-when="message" class="message">
               <img class="profile" style="background-color: {{::entry.color}}; border: 3px solid {{::entry.color}};" ng-src="{{ ::entry.avatar || '/images/empty-avatar.png' }}" />
-              <p class="user-select-enabled body" bind-html-compile="::entry.text | linky:'_blank' | mediaShareFilter"></p>
+              <p class="user-select-enabled body" bind-html-compile="::entry.text | linky:'_blank'"></p>
               <div class="timestamp">{{::entry.timestamp | timestamp }}</div>
             </article>
           </div>

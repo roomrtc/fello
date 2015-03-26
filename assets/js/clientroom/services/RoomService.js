@@ -1,7 +1,7 @@
 /**
- * Created by Vunb on 18/2/2015.
- */
-angular.module("videoconference")
+* Created by Vunb on 3.19.2015.
+*/
+angular.module("fello.clientroom")
   .factory("RoomService", ["RoomState",
     "RTCManager",
     "serverSocket",

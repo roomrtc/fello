@@ -22,7 +22,10 @@ angular
     'fello.common',
     'jm.i18next',
     'ui.router',
-    'timer'
+    'timer',
+    'ngSanitize',
+    //'youtube-embed',
+    'angular-bind-html-compile'
   ])
   .config([
     '$stateProvider',
@@ -43,18 +46,19 @@ angular
           }
         })
         .state('public.404', {
-          url: '/404/',
+          url: '/404',
           templateUrl: '/templates/public/404.html'
         });
 
       // Live routes
       $stateProvider
         .state('clientroom', {
-          url: '/',
+          url: '/:roomName',
           templateUrl: '/templates/clientroom/live.html',
           controller: 'LiveController'
         });
 
+      // Default route to client room
       $urlRouterProvider.otherwise('/404');
 
       // FIX for trailing slashes. Gracefully "borrowed" from https://github.com/angular-ui/ui-router/issues/50
@@ -94,20 +98,30 @@ angular
 
     }
   ])
-  .run(['$rootScope', '$state', '$location', '$window', 'rtcapi', function ($rootScope, $state, $location, $window, rtcApi) {
+  .run(['$rootScope', '$state', '$location', '$window', 'rtcapi', 'lodash', 'RoomState', function ($rootScope, $state, $location, $window, rtcApi, _, RoomState) {
+    $rootScope._ = _;
     $rootScope.$on("$locationChangeStart", function (event, next, current) {
       if (rtcApi.webSocket) {
         rtcApi.disconnect();
       }
     });
-    //$state.go('live'); default --> do not needed statement here ;)
+
     $rootScope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {
 
     });
-    $rootScope.$on('$stateChangeSuccess', function (event) {
+    $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+      RoomState.roomName = toParams.roomName;
+
       // Setup _ga:  http://www.arnaldocapo.com/blog/post/google-analytics-and-angularjs-with-ui-router/72
       if (!$window.ga) return;
       //$window.ga('send', 'pageview', { page: $location.path() });
     });
+    // Bussiness
+    //$state.go('live'); default --> do not needed statement here ;)
+    // check roomName is exists
+    var roomExists = true;
+    if(!roomExists) {
+      $state.go('public.404');
+    }
   }])
 ;
