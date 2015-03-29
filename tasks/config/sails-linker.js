@@ -283,6 +283,36 @@ module.exports = function(grunt) {
 			}
 		},
 
+		prodStylesDashboard: {
+			options: {
+				startTag: '<!--DASHBOARD STYLES-->',
+				endTag: '<!--DASHBOARD STYLES END-->',
+				fileTmpl: '<link rel="stylesheet" href="%s">',
+				appRoot: '.tmp/public',
+				relative: false
+			},
+			files: {
+				'.tmp/public/index.html': ['.tmp/public/min/app.dashboard.min.css'],
+				'views/**/*.html': ['.tmp/public/min/app.dashboard.min.css'],
+				'views/**/*.ejs': ['.tmp/public/min/app.dashboard.min.css']
+			}
+		},
+
+		prodStylesClientRoom: {
+			options: {
+				startTag: '<!--CLIENTROOM STYLES-->',
+				endTag: '<!--CLIENTROOM STYLES END-->',
+				fileTmpl: '<link rel="stylesheet" href="%s">',
+				appRoot: '.tmp/public',
+				relative: false
+			},
+			files: {
+				'.tmp/public/index.html': ['.tmp/public/min/app.clientroom.min.css'],
+				'views/**/*.html': ['.tmp/public/min/app.clientroom.min.css'],
+				'views/**/*.ejs': ['.tmp/public/min/app.clientroom.min.css']
+			}
+		},
+
 		// Bring in JST template object
 		devTpl: {
 			options: {

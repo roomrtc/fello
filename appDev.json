@@ -11,8 +11,9 @@
     "port"       : 1337,
     "cwd"         : "/var/node/fello/fello.in",
     "env": {
-        "NODE_ENV": "development",
-        "GETCONFIG_ROOT": "/var/node/fello/fello.in"
+      "PORT": 1337,
+      "NODE_ENV": "development",
+      "GETCONFIG_ROOT": "/var/node/fello/fello.in"
     }
   }]
 }

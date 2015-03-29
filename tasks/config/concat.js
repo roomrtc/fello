@@ -31,11 +31,11 @@ module.exports = function(grunt) {
     },
     cssDashboard: {
       src: require('../pipeline').cssFilesToInjectDashboard,
-      dest: '.tmp/public/concat/production.dashboard.js'
+      dest: '.tmp/public/concat/production.dashboard.css'
     },
     cssClientRoom: {
-      src: require('../pipeline').jsFilesToInjectClientRoom,
-      dest: '.tmp/public/concat/production.clientroom.js'
+      src: require('../pipeline').cssFilesToInjectClientRoom,
+      dest: '.tmp/public/concat/production.clientroom.css'
 		}
 	});
 
