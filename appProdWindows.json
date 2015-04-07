@@ -10,7 +10,7 @@
     "exec_mode"  : "fork_mode",
     "port"       : 1337,
     "cwd"        : "D:/node/Fello.in/felloin",
-    "args"       : ["-x", "--", "--prod"],
+    "args"       : ["--", "--prod"],
     "env": {
         "NODE_ENV": "production",
         "GETCONFIG_ROOT": "/var/node/fello/fello.in"

@@ -34,6 +34,7 @@ var cssFilesToInjectDashboard = [
   '/css/dashboard/bootstrap.min.css',
   '/css/dashboard/dashboard.css',
   '/css/dashboard/sticky.css',
+  '/css/dashboard/chatbox.css',
   '/css/dashboard/custom.css'
 ];
 
@@ -65,6 +66,7 @@ var jsFilesToInject = [
 var jsFilesToInjectDashboard = [
   // <!-- Mainly scripts -->
   '/vendor/jquery/jquery.js',
+  '/vendor/lodash/lodash.js',
   '/vendor/bootstrap/bootstrap.js',
   '/js/plugins/metisMenu/jquery.metisMenu.js',
   '/js/plugins/slimscroll/jquery.slimscroll.min.js',
@@ -95,6 +97,7 @@ var jsFilesToInjectDashboard = [
   '/js/dashboard/filters/TimeAgoFilter.js',
   '/js/dashboard/services/CallService.js',
   '/js/dashboard/directives/TimeAgoDirective.js',
+  '/js/dashboard/directives/ChatboxDirective.js',
   '/js/dashboard/controllers/LiveController.js'
 ];
 

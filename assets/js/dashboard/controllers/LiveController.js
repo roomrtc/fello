@@ -7,17 +7,18 @@ angular.module('fello.dashboard')
 
       var initApp = function () {
 
+        $scope.chatClients = {};
         $scope.waitingClients = {};
         $scope.agentList = {};
         $scope.processingList = {};
         $scope.dialogistList = {};
         $scope.me = {};
         $scope.me.easyrtcid = "fetching ...";
-        $scope.me.roomName = "bkindex"; // "fello.in_congtya";
+        $scope.me.roomName = "demo"; // "fello.in_congtya";
         $scope.me.name = "Vu Bao Nhu";
 
         $scope.roomInfo = {};
-        $scope.roomInfo.roomName = "bkindex";//"fello.in_congtya";
+        $scope.roomInfo.roomName = "demo";//"fello.in_congtya";
         $scope.waitingCount = 0;
         $scope.proccessingCount = 0;
 
@@ -77,7 +78,7 @@ angular.module('fello.dashboard')
           var callId = peer.easyrtcid;
           var client = {};
           client.name = utils.getFieldValue(peer["apiField"], "clientName") || callId;
-          client.email = utils.getFieldValue(peer["apiField"], "clientEmail") || callId;;
+          client.email = utils.getFieldValue(peer["apiField"], "clientEmail") || callId;
           client.callId = callId;
           client.easyrtcid = callId;
           client.roomJoinTime = peer.roomJoinTime;
@@ -329,9 +330,21 @@ angular.module('fello.dashboard')
 
       };
 
-      $scope.chat = function (callId) {
-        // make call
+      $scope.chat = function (uid) {
+        if (!$scope.chatClients[uid]) {
+          $timeout(function () {
+            var client = $scope.waitingClients[uid] || $scope.processingList[uid];
+            $scope.chatClients[uid] = client;
+          });
+        }
       };
+
+      $scope.closeChat = function (uid) {
+        $timeout(function () {
+          delete $scope.chatClients[uid];
+        });
+      };
+
 
       $scope.drop = function (callId) {
         var clientid = callId.clientid || callId;
