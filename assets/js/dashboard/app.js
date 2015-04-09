@@ -8,7 +8,9 @@ var halse = 1 && 0;
 angular
   .module('fello.dashboard', [
     'fello.common',
-    'ui.router', 'elif'
+    'ui.router',
+    'ui.bootstrap.dropdown',
+    'elif'
   ])
   .config([
     '$stateProvider',

@@ -2,8 +2,8 @@
  * Created by Vunb on 1/2/2015.
  */
 angular.module('fello.dashboard')
-  .controller('LiveController', ['$scope', '$filter', '$timeout', '$compile', 'rtcapi', 'CallService', 'utils',
-    function ($scope, $filter, $timeout, $compile, rtcApi, callService, utils) {
+  .controller('LiveController', ['$scope', '$filter', '$timeout', '$compile', '$log', 'rtcapi', 'CallService', 'utils',
+    function ($scope, $filter, $timeout, $compile, $log, rtcApi, callService, utils) {
 
       var initApp = function () {
 
@@ -385,6 +385,28 @@ angular.module('fello.dashboard')
         }, function (errorCode, errorText) {
           console.log("error was " + errorText);
         });
+      };
+
+      $scope.myRooms = [
+        'Demo',
+        'Ebay',
+        'Edoctor'
+      ];
+
+      $scope.lastVisit = "Demo";
+
+      $scope.status = {
+        isopen: false
+      };
+
+      $scope.toggled = function(open) {
+        $log.log('Dropdown is now: ', open);
+      };
+
+      $scope.toggleDropdown = function($event) {
+        $event.preventDefault();
+        $event.stopPropagation();
+        $scope.status.isopen = !$scope.status.isopen;
       };
 
       // init
