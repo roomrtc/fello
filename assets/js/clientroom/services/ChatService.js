@@ -120,8 +120,10 @@ angular.module("fello.clientroom").factory("ChatService", ["$rootScope", "$docum
         //content = "**no body**";
         return;
       }
-      content = content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      content = content.replace(/\n/g, '<br />');
+      var text = content && content.text;
+      text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      text = text.replace(/\n/g, '<br />');
+      content.text = text;
       var targetingStr = "";
       if (targeting) {
         if (targeting.targetEasyrtcid) {

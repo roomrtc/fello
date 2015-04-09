@@ -10,6 +10,7 @@ angular.module('fello.dashboard')
       replace: true,
       scope: {
         client: "=",
+        myid: "=",
         chatClients: "=clients",
         close: "&onClose"
       },
@@ -36,7 +37,22 @@ angular.module('fello.dashboard')
           }
         });
       },
-      controller: ["$scope", function ($scope) {
+      controller: ["$scope", "rtcapi", function ($scope, rtcApi) {
+        $scope.sendMessage = function () {
+          var message = {
+            timeSent: new Date(),
+            timeReceived: new Date(),
+            message: $scope.client.message,
+            roomName: "demo",
+            from: $scope.myid,
+            fromClientId: $scope.myid, // TODO: delete this prop
+            to: $scope.client.callId
+          };
+
+          $scope.client.message = "";
+          $scope.client.messages.push(message);
+          rtcApi.sendChatMessage(message);
+        };
 
       }]
     }

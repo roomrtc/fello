@@ -142,5 +142,5 @@
     </div>
   </div>
 
-  <chatbox ng-repeat="(id, client) in chatClients" clients="chatClients" client="client" on-close="closeChat(client.callId)"></chatbox>
+  <chatbox ng-repeat="(id, client) in chatClients" myid="me.easyrtcid" clients="chatClients" client="client" on-close="closeChat(client.callId)"></chatbox>
 </div>
