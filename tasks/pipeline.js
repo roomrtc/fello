@@ -78,6 +78,7 @@ var jsFilesToInjectDashboard = [
   '/socket.io/socket.io.js',
   '/vendor/angular/angular.js',
   '/vendor/angular-ui-router/angular-ui-router.js',
+  '/vendor/angular-ui-bootstrap/src/dropdown/dropdown.js',
   '/vendor/angular-sanitize/angular-sanitize.js',
   '/vendor/angular-cookies/angular-cookies.js',
   //'/vendor/angular-youtube-mb/angular-youtube-embed.js',
