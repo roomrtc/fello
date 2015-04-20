@@ -46,6 +46,10 @@ div.drawer-overlay {
   height: 340px;
 }
 
+.mastfoot1 .row {
+background-image: url(/icon/activinvite-icon.png);
+}
+
 /* Video style */
 .videocontainer video {
   display: block;
@@ -87,8 +91,8 @@ footer.embedded {
   bottom: 0;
   right: 0;
   height: 238px;
-  /* width: 630px; */
-  /* max-width: 630px; */
+  width: 100%;
+  max-width: 100%;
   z-index: 600;
   background-color: #fff;
   border-top: 1px solid #c2c9d4;
