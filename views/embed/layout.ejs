@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+  <meta charset="utf-8">
+  <!-- Viewport mobile tag for sensible mobile support -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+  <!-- CDN -->
+  <link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,700,600' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+  <!--EMBED STYLES-->
+  <link rel="stylesheet" href="/embed/embed.css">
+  <link rel="stylesheet" href="/embed/callnowbox.css">
+  <!--EMBED STYLES END-->
+  <!-- This is needed because Facebook login redirects add #_=_ at the end of the URL-->
+  <script type="text/javascript">
+    if (window.location.href.indexOf('#_=_') > 0) {
+      window.location = window.location.href.replace(/#.*/, '');
+    }
+  </script>
+  <base href="/embed/">
+</head>
+
+<body class="home-drawer active">
+<%- body %>
+<script type="text/javascript" src="/easyrtc/easyrtc.js"></script>
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
+<!--EMBED SCRIPTS-->
+<!--EMBED SCRIPTS END-->
+</body>
+</html>

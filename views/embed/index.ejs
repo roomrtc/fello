@@ -1,0 +1,51 @@
+<script>
+  function closeDrawer() {
+    parent.postMessage("close:drawer", "*");
+  }
+</script>
+<div id="container-page" class="grid--wide">
+  <div class="viewport">
+    <header class="site-nav--wrapper" data-role="nav-view">
+    </header>
+
+    <div class="drawer-footer">
+      <a href="/" data-action="full-root" target="_blank" class="nav-logo">
+        https://fello.in/demo
+      </a>
+
+      <div class="drawer-footer-right" data-jester-area="drawer_footer">
+        <a class="nav-expand truncate-line" data-action="full-root" target="_blank" href="/">
+          <svg class="icon-home" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve"><path d="M39.5 20.7L21.7 2.5c-0.9-1-2.4-1-3.3 0L0.5 20.7c-0.9 1-0.6 1.7 0.8 1.7H5v13.9c0 1 0 1.8 1.8 1.8h8.7v-14 h9.1v14h9.1c1.4 0 1.4-0.8 1.4-1.8V22.4h3.7C40.1 22.4 40.4 21.6 39.5 20.7z"></path></svg>
+          <span class="text-desktop">Fello Home</span>
+        </a>
+        <a class="nav-feedback truncate-line" target="_blank" href="//www.surveymonkey.com/s/abc?u=123456"
+           data-link-name="feedback">
+          <span class="icon-checkmark"></span>
+          <span class="text-desktop">Feedback?</span>
+        </a>
+        <a class="nav-help truncate-line" target="_blank" href="//help.fello.in" data-link-name="help">
+          <span class="icon-forward"></span>
+          <span class="text-desktop">Get Help</span>
+        </a>
+      </div>
+    </div>
+    <!-- Navigation Control -->
+    <div class="drawer-nav">
+      <a class="drawer-nav-option drawer-nav-close" data-action="close-drawer" href="#" onclick="closeDrawer()"><span
+          class="drawer-nav-option-text">Close</span><span class="icon-cancel"></span></a>
+      <a class="drawer-nav-option drawer-nav-full" data-action="full-home" href="#"><span
+          class="drawer-nav-option-text">View on Fello</span><span class="icon-expand"></span></a>
+    </div>
+
+    <div data-role="messages-view" class="alert-global">
+    </div>
+
+    <div id="container-main" style="min-height: 369px;">
+      <div>
+        <div class="section-expanded sidebar-fixed">Room: Demo</div>
+        <div class="section-contained">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

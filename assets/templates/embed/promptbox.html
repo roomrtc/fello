@@ -1,0 +1,21 @@
+<!-- Prompt user input button -->
+<div class="call-now-box" style="display: none">
+  <input type="checkbox"/>
+  <label data-expanded="What't is your name ?" data-collapsed="Click here to Call Video">
+    <!--<i class="fa fa-video-camera"></i>-->
+    <img src="/icon/chatVideo.svg">
+  </label>
+
+  <div class="call-now-box-content">
+    <form onsubmit="alert('start call'); return false;" class="ty_name_form" id="ty_name_form"><input
+      style="font-size: 13px; width: 96%; padding: 1px 5px; margin-top:10px; border-radius:5px; height:30px; border: 1px solid #B3B1B1;"
+      required placeholder="Name" class="input_name" type="text"><input
+      style="font-size: 13px; width: 96%; padding: 1px 5px; margin-top:15px; border-radius:5px; height:30px; border: 1px solid #B3B1B1;"
+      required placeholder="Email" class="input_email" type="email">
+      <button
+        style="margin: 15px auto; display: block; color: white; background: #207DC8; height: 28px;width: 100px; border: 0px rgb(255, 255,255);"
+        name="submit" type="submit" class="enterbtn" id="enterbtn">Start Call
+      </button>
+    </form>
+  </div>
+</div>

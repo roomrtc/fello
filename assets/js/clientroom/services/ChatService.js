@@ -25,6 +25,10 @@ angular.module("fello.clientroom").factory("ChatService", ["$rootScope", "$docum
           this.text = data.text;
           this.avatar = data.avatar;
           this.color = getColor(senderId);
+          this.timeSent = new Date();
+          this.timeReceived = new Date();
+          this.roomName = RoomState.roomName;
+          this.from = senderId;
         }
       };
 
@@ -75,7 +79,7 @@ angular.module("fello.clientroom").factory("ChatService", ["$rootScope", "$docum
     // send Message Peers
     //sendMessage(null, roomName); --> ROOM
     //sendMessage(easyrtcid, roomName); --> PRIVATE MESSAGE
-    function sendMessage(destTargetId, destRoom, text) {
+    function sendMessage(destTargetId, destRoom, text, senderId) {
       if (text.replace(/\s/g, "").length === 0) { // Don't send just whitespace
         return;
       }
@@ -99,7 +103,7 @@ angular.module("fello.clientroom").factory("ChatService", ["$rootScope", "$docum
         return;
       }
 
-      var msgData = {text: text, timestamp: new Date(), isOwnChatMessage: true}
+      var msgData = {text: text, timestamp: new Date(), isOwnChatMessage: true, senderId : senderId}
         , avatar = avatarProvider.getAvatar();
       avatar && (msgData.avatar = avatar);
 
@@ -124,6 +128,7 @@ angular.module("fello.clientroom").factory("ChatService", ["$rootScope", "$docum
       text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       text = text.replace(/\n/g, '<br />');
       content.text = text;
+      content.senderId = who;
       var targetingStr = "";
       if (targeting) {
         if (targeting.targetEasyrtcid) {

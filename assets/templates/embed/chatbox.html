@@ -1,0 +1,38 @@
+<div id="chat-messages" class="messages" ng-class="{ opened: chatActive, closed: !chatActive }">
+  <div class="chatbox-messages">
+    <ol class="discussion">
+      <li ng-repeat="entry in messages track by $index"
+          ng-class="entry.from == clientInfo.easyrtcid ? 'self' : 'other'">
+        <div class="avatar">
+          <img ng-if="entry.from == clientInfo.easyrtcid"
+               src="/icon/icon2.png"/>
+          <img ng-if="entry.from != clientInfo.easyrtcid"
+               src="/icon/icon3.png"/>
+        </div>
+        <div class="messages">
+          <p>{{::entry.text}}</p>
+          <time datetime="2009-11-13T20:00">at {{::entry.timeReceived}}</time>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <form ng-submit="sendMessage()" class="message-input-wrapper">
+
+    <div class="form-group has-success has-feedback">
+
+      <div class="input-group">
+        <span class="input-group-addon unread-count">{{ numberOfUnreadMessages || '@' }}</span>
+        <input id="chat-message-box-input" class="form-control" ng-show="isConnected()" type="text" ng-model="message"
+               ng-i18next="[placeholder]Write something nice!" ng-click="handleChatInputClick()"
+               ng-keydown="handleKeydownEvent($event)">
+
+        <div ng-show="!isConnected()" class="form-control fake-input" ng-i18next>Chat temporarily unavailable, please
+          wait...
+        </div>
+      </div>
+      <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+    </div>
+
+  </form>
+</div>

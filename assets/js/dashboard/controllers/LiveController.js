@@ -193,7 +193,7 @@ angular.module('fello.dashboard')
           _d.agentName = _getMe().name;
           _d.clientid = callerRtcid;
 
-          var btnDrop = $compile("<div id='btnDrop'><button class='btn btn-default' ng-click='drop(me.dialogist)'>Drop</button></div>")($scope);
+          var btnDrop = $compile("<div id='btnDrop'><button class='btn btn-default' ng-click='drop(me.dialogist)'>Drop</button> <a class='btn btn-xs btn-primary' ng-click='chat(me.dialogist.clientid)'><i class='fa fa-wechat chat'></i> Chat</a></div>")($scope);
           var video = document.getElementById('caller');
           rtcApi.setRoomApiField(roomName, "dialogist", callerRtcid);
           rtcApi.setVideoObjectSrc(video, stream);
@@ -203,16 +203,18 @@ angular.module('fello.dashboard')
             // update fields
             $scope.ismeeting = true;
             $scope.me.dialogist = _d;
-            $scope.processingList[callerRtcid] = _d;
+            $scope.processingList[callerRtcid] = _c;
             delete $scope.waitingClients[callerRtcid];
           });
         });
 
         rtcApi.setOnStreamClosed(function (callerRtcid) {
-          rtcApi.setVideoObjectSrc(document.getElementById('caller'), "");
           var btnDrop = document.getElementById('btnDrop');
+          var uid = callerRtcid;
+          rtcApi.setVideoObjectSrc(document.getElementById('caller'), "");
           angular.element(btnDrop).remove();
           delete $scope.me.dialogist;
+          delete $scope.chatClients[uid];
         });
 
 
@@ -239,10 +241,15 @@ angular.module('fello.dashboard')
           }
           //chatStorage.entries.push(new parseMessage(content));
           //$rootScope.$broadcast("new_chat_message", content);
-          var client = $scope.waitingClients[who];
+          var client = $scope.waitingClients[who] || $scope.processingList[who];
           if (client) {
-            $scope.waitingClients[who].messages = $scope.waitingClients[who].messages || [];
-            $scope.waitingClients[who].messages.push({message: message});
+            client.messages = client.messages || [];
+            client.messages.push({
+                timeSent: content.timeSent,
+                timeReceived: new Date(),
+                message: message,
+                from: content.from
+              });
             $scope.$apply();
           }
 
@@ -347,7 +354,7 @@ angular.module('fello.dashboard')
 
 
       $scope.drop = function (callId) {
-        var clientid = callId.clientid || callId;
+        var clientid = callId.clientid || callId.callId || callId;
         var roomName = _getMe().roomName;
         var data = {
           easyrtcid: clientid,

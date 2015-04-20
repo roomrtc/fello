@@ -21,6 +21,9 @@ angular.module('fello.clientroom')
     function ($rootScope, $scope, $state, $stateParams, $filter, $window, RtcApi, _, utils, memo, fluidGrid, State, serverSocket, RoomState) {
       var $ = angular.element;
       var roomName = RoomState.roomName; //"fello.in_congtya";
+      var clientInfo = {};
+      clientInfo.name = memo.getUsername() || "";
+      clientInfo.email = memo.getUserEmail() || "";
       // check name exists !!
 
       var initApp = function () {
@@ -29,30 +32,28 @@ angular.module('fello.clientroom')
         $scope.waitingClients = [];
         $scope.processingList = [];
         $scope.isDenied = false;
-        $scope.me = {};
-        $scope.me.name = memo.getUsername() || "";
-        $scope.me.email = memo.getUserEmail() || "";
         $scope.agent = {};
         $scope.agentCallId = "";
-        $scope.streams = {};
-        $scope.shuffle = fluidGrid('#remotes >');
-        //$scope.roomInfo = {};
-        //$scope.roomInfo.roomName = "fello.in_congtya";
-        $scope.helper = {};
-        $scope.helper.messageNotify = "Are you ready ? Automatically call an Agent in {{}} seconds";
+        $scope.peers = {};
+        $scope.shuffle = fluidGrid('#remotes >') || utils.empty;
         $scope.state = "ready";
         $scope.roomState = "";
 
         $scope.addStream = function (id, stream) {
-          $scope.streams[id] = utils.getStreamAsUrl(stream);
-          $scope.me.inconversation = true;
+          var streamUrl = utils.getStreamAsUrl(stream);
+          if (id == 'localVideo') {
+            $scope.localVideo = streamUrl;
+          } else {
+            $scope.peers[id] = streamUrl;
+          }
+          $scope.clientInfo.inconversation = true;
           $scope.$apply();
           $scope.shuffle();
         };
 
         $scope.handleVideoClick = function (e) {
           //if (e.target.id == 'localVideo') return;
-          if (_.size($scope.streams) == 1) return;
+          if (_.size($scope.peers) == 0) return;
 
           // e.target is the video element, we want the container #remotes > div > div
           var container = angular.element(e.target).parent().parent();
@@ -98,7 +99,16 @@ angular.module('fello.clientroom')
 
 
       var requestAccessMedia = function () {
-        $scope.roomState = State.PLEASE_GRANT_ACCESS;
+        RtcApi.initMediaSource(function () {       // success callback
+          $scope.IsNotAllowAccessMedia = false;
+          $scope.clientInfo.promptMessage = "AreYouReadyCall";
+          //var selfVideo = document.getElementById("self");
+          //RtcApi.setVideoObjectSrc(selfVideo, RtcApi.getLocalStream());
+          $scope.addStream('localVideo', RtcApi.getLocalStream());
+          $scope.$apply();
+        }, function (errorCode, errorText) {
+          console.log(errorCode, errorText);
+        });
         //k.getUserMedia({
         //  video: !O,
         //  audio: !0
@@ -113,6 +123,15 @@ angular.module('fello.clientroom')
         //})
       };
 
+      var connectServer = function () {
+        RtcApi.connect("fello.serverApp", function (rtcid) {
+          _loginSuccess(rtcid);
+          $scope.roomState = State.WAITING_FOR_CONNECTION;
+          $scope.$apply();
+        }, _loginFailure);
+
+      };
+
       function roomListener(roomName, otherPeers) {
         for (var i in otherPeers) {
           console.log('other_in_room: ' + i);
@@ -120,7 +139,7 @@ angular.module('fello.clientroom')
       }
 
       var _loginSuccess = function (rtcid) {
-        $scope.me.easyrtcid = rtcid;
+        $scope.clientInfo.easyrtcid = rtcid;
         $scope.$apply();
       };
 
@@ -135,20 +154,7 @@ angular.module('fello.clientroom')
         $scope.IsNotAllowAccessMedia = true;
 
         RtcApi.setRoomOccupantListener(roomListener);
-        RtcApi.initMediaSource(function () {       // success callback
-          $scope.IsNotAllowAccessMedia = false;
-          $scope.me.promptMessage = "AreYouReadyCall";
-          //var selfVideo = document.getElementById("self");
-          //RtcApi.setVideoObjectSrc(selfVideo, RtcApi.getLocalStream());
-          $scope.addStream('localVideo', RtcApi.getLocalStream());
-          RtcApi.connect("fello.serverApp", function (rtcid) {
-            _loginSuccess(rtcid);
-            $scope.roomState = State.WAITING_FOR_CONNECTION;
-          }, _loginFailure);
-          $scope.$apply();
-        }, function (errorCode, errorText) {
-
-        });
+        connectServer();
 
         //rtcApi.easyApp("fello.instantMessaging", "self", ["caller"], function (myId) {
         //    console.log("My rtcid is " + myId);
@@ -166,25 +172,25 @@ angular.module('fello.clientroom')
           //}
         });
         RtcApi.setStreamAcceptor(function (acceptorRtcid, stream) {
-          //var video = document.getElementById('caller');
-          // rtcApi.setVideoObjectSrc(video, stream);
-          // use objectURL to manage stream
           var id = acceptorRtcid;
+
           RoomState.agentId = id;
+
           $scope.addStream(id, stream);
-          $scope.me.inconversation = true;
+          $scope.clientInfo.inconversation = true;
           $scope.agent.easyrtcid = id;
           $scope.$apply();
         });
 
         RtcApi.setOnStreamClosed(function (acceptorRtcid) {
           var id = acceptorRtcid;
-          var url = $scope.streams[id];
-          URL.revokeObjectURL(url);
-          $scope.me.inconversation = true;
+          var url = $scope.peers[id];
+
+          utils.revokeObjectURL(url);
+          $scope.clientInfo.inconversation = true;
           delete $scope.agent.easyrtcid;
-          delete $scope.streams[id];
-          if (_.size($scope.streams) == 1) {
+          delete $scope.peers[id];
+          if (_.size($scope.peers) == 0) {
             angular.element('.videocontainer').removeClass('focused');
           }
           $scope.shuffle();
@@ -199,37 +205,37 @@ angular.module('fello.clientroom')
               break;
             case "callAccept":
               console.log('You are accepted by Admin !', msgData);
-              if (msgData.easyrtcid == $scope.me.easyrtcid) {
+              if (msgData.easyrtcid == $scope.clientInfo.easyrtcid) {
                 alert("You are accepted by Admin !");
               }
               break;
             case "callDrop":
-              if (msgData.easyrtcid == $scope.me.easyrtcid) {
+              if (msgData.easyrtcid == $scope.clientInfo.easyrtcid) {
                 console.log('You are dropped by Admin !', msgData);
                 RtcApi.leaveRoom(msgData.roomName, function (roomName) {
-                  $scope.me.inconversation = false;
-                  $scope.me.promptMessage = "DoYouWantRecall";
+                  $scope.clientInfo.inconversation = false;
+                  $scope.clientInfo.promptMessage = "DoYouWantRecall";
                   $scope.$apply();
                 });
               }
               break;
             case "callDeny":
-              if (msgData.easyrtcid == $scope.me.easyrtcid) {
+              if (msgData.easyrtcid == $scope.clientInfo.easyrtcid) {
                 console.log('You are denied by Admin !', msgData);
                 //alert("You are denied by Admin !");
               }
-              $scope.me.inconversation = false;
-              $scope.me.promptMessage = "YouAreDenied";
+              $scope.clientInfo.inconversation = false;
+              $scope.clientInfo.promptMessage = "YouAreDenied";
               $scope.$apply();
 
               break;
             case "callBlock":
-              if (msgData.easyrtcid == $scope.me.easyrtcid) {
+              if (msgData.easyrtcid == $scope.clientInfo.easyrtcid) {
                 console.log('You are kicked by Admin !', msgData);
                 //alert("You are kicked by Admin !");
               }
-              $scope.me.inconversation = false;
-              $scope.me.promptMessage = "YouAreBlocked";
+              $scope.clientInfo.inconversation = false;
+              $scope.clientInfo.promptMessage = "YouAreBlocked";
               $scope.$apply();
               break;
             case "clientJoin":
@@ -240,13 +246,10 @@ angular.module('fello.clientroom')
       }
 
       $scope.readyInfo = function () {
-        return !!($scope.me.name && $scope.me.email);
+        return !!($scope.clientInfo.name && $scope.clientInfo.email);
       };
 
       $scope.call = function (agentCallId) {
-        // set the id is  not Agent
-        // RtcApi.setRoomApiField(roomName, "isAgent", false);  // DONT NEED
-        // RtcApi.setRoomApiField(roomName, "isDisplay", true); // DONT NEED
 
         if (!$scope.readyInfo()) {
           return;
@@ -254,14 +257,14 @@ angular.module('fello.clientroom')
 
         var rooms = RtcApi.getRoomsJoined();
         var joinRoom = function () {
-          var clientName = $scope.me.name;
-          var clientEmail = $scope.me.email;
+          var clientName = $scope.clientInfo.name;
+          var clientEmail = $scope.clientInfo.email;
           RtcApi.setRoomApiField(roomName, "agentName", agentCallId);
           RtcApi.setRoomApiField(roomName, "clientName", clientName);
           RtcApi.setRoomApiField(roomName, "clientEmail", clientEmail);
           RtcApi.joinRoom(roomName, null, function (roomName) {
-            $scope.me.promptMessage = "PleaseWaitAccept";
-            $scope.me.inconversation = false;
+            $scope.clientInfo.promptMessage = "PleaseWaitAccept";
+            $scope.clientInfo.inconversation = false;
             $scope.$apply();
 
             // save user info
@@ -290,22 +293,27 @@ angular.module('fello.clientroom')
 
       $scope.recall = function (callId) {
         // make call
-        RtcApi.call(callId, function (rtcid) {
-            console.log("completed call to " + rtcid);
-          }, function (errorMessage) {
-            console.log("err:" + errorMessage);
-          }, function (accepted, bywho) {
-            console.log((accepted ? "accepted" : "rejected") + " by " + bywho);
-          }
-        );
+        RtcApi.connect("fello.serverApp", function (rtcid) {
+          _loginSuccess(rtcid);
+          $scope.roomState = State.WAITING_FOR_CONNECTION;
+          $scope.call(RoomState.agentId);
+        }, _loginFailure);
+        //RtcApi.call(callId, function (rtcid) {
+        //    console.log("completed call to " + rtcid);
+        //  }, function (errorMessage) {
+        //    console.log("err:" + errorMessage);
+        //  }, function (accepted, bywho) {
+        //    console.log((accepted ? "accepted" : "rejected") + " by " + bywho);
+        //  }
+        //);
 
       };
 
       $scope.chat = function (message) {
 
-        if(_.isEmpty(message)) return;
+        if (_.isEmpty(message)) return;
         var msgData = {
-          fromClientId: $scope.me.easyrtcid,
+          fromClientId: $scope.clientInfo.easyrtcid,
           toAdminId: $scope.agent.easyrtcid,
           roomName: roomName,
           message: message
@@ -323,6 +331,19 @@ angular.module('fello.clientroom')
         // drop call
       };
 
+      $scope.closeDrawer = function () {
+        $scope.clientInfo.promptMessage = "DoYouWantRecall";
+        $rootScope.$broadcast('disconnectRtc');
+
+        delete $scope.localVideo;
+
+        utils.postMessage("close");
+      };
+
+      $scope.minDrawer = function () {
+        utils.postMessage("close");
+      };
+
       $scope.stopTimer = function () {
         $scope.$broadcast('timer-stop');
         $scope.timerRunning = false;
@@ -333,24 +354,23 @@ angular.module('fello.clientroom')
       });
 
       $scope.roomName = roomName;
-      utils.isRoomExists(roomName).then(function (roomName) {
-        initApp();
-        initRtc();
-      }, function (err) {
-        alert(err);
-        $state.go("public.404");
-      });
-
+      $scope.clientInfo = clientInfo;
+      $scope.clientStream = "";
       // $scope event
-      $scope.$watch("roomState", function(newVal) {
+      $scope.$watch("roomState", function (newVal) {
         switch (newVal) {
           case State.WAITING_FOR_CONNECTION:
-            serverSocket.connect();
-            var socket = $rootScope.$on("connected", function() {
+            if (serverSocket.isConnected()) {
+              $scope.roomState = State.WAITING_FOR_ACCESS;
+            } else {
+              serverSocket.connect();
+            }
+            var socket = $rootScope.$on("connected", function () {
               $scope.roomState = State.WAITING_FOR_ACCESS, socket()
             });
             break;
           case State.WAITING_FOR_ACCESS:
+            $scope.roomState = State.PLEASE_GRANT_ACCESS;
             requestAccessMedia();
             break;
           case State.WAITING_FOR_ROOM_INFORMATION:
@@ -360,5 +380,13 @@ angular.module('fello.clientroom')
 
         }
       });
+      utils.isRoomExists(roomName).then(function (roomName) {
+        initApp();
+        initRtc();
+      }, function (err) {
+        alert(err);
+        $state.go("public.404");
+      });
+
 
     }]);

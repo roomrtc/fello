@@ -10,15 +10,21 @@
     </div>
 
     <div id="remotes">
-      <div class="videocontainer focusable" ng-repeat="(id, stream) in streams" splitscreen="true">
+      <div ng-if="localVideo" class="videocontainer focusable" splitscreen="true">
         <div>
-          <video id="{{id}}" class="client" width="300" height="200" src="{{stream}}"
+          <video id="localVideo" class="client" width="300" height="200" src="{{localVideo}}"
                  ng-click="handleVideoClick($event)" ng-style="shuffle()" resize autoplay="true"></video>
         </div>
       </div>
-      <div style="text-align: center" ng-if="_.size(streams) == 1" splitscreen="_.size(streams) == 1">
+      <div class="videocontainer focusable" ng-repeat="(id, peer) in peers" splitscreen="true">
+        <div>
+          <video id="{{id}}" class="client" width="300" height="200" src="{{peer}}"
+                 ng-click="handleVideoClick($event)" ng-style="shuffle()" resize autoplay="true"></video>
+        </div>
+      </div>
+      <div style="text-align: center" ng-if="_.isEmpty(peers)" splitscreen="_.size(peers) == 1">
         <!--START PROMPT USER-->
-        <div ng-switch on="me.promptMessage">
+        <div ng-switch on="clientInfo.promptMessage">
           <div ng-switch-when="AreYouReadyCall">
             <h2 ng-if="::readyInfo()">
               <timer countdown="9" interval="1000" finish-callback="call(null)">Are you ready ? Automatically call
@@ -29,12 +35,14 @@
               <form name="frmUserInfo" class="frmUserInfo cf">
                 <ul>
                   <li><label style="text-align: left" for="username">Name</label>
-                    <input type="text" name="username" id="username" ng-model="me.name" placeholder="What's your name ?"
+                    <input type="text" name="username" id="username" ng-model="clientInfo.name"
+                           placeholder="What's your name ?"
                            ng-minlength="2" ng-maxlength="30" required></li>
-                  <li><label style="text-align: left"  for="useremail">Email</label>
-                    <input type="email" name="useremail" id="useremail" ng-model="me.email"
+                  <li><label style="text-align: left" for="useremail">Email</label>
+                    <input type="email" name="useremail" id="useremail" ng-model="clientInfo.email"
                            placeholder="yourname@email.com" ng-minlength="5" ng-maxlength="30" required></li>
-                  </ul><ul>
+                </ul>
+                <ul>
                   <li>
                     <button class="btn btn-success" ng-click="call(agentCallId)"
                             ng-disabled="frmUserInfo.$invalid">Call now !
@@ -83,7 +91,7 @@
           </div>
           <div ng-switch-when="PleaseWaitAccept">
             <div class="row">
-              <h2 ng-show="_.size(streams) < 2">Please wait agent accept your call...</h2>
+              <h2 ng-show="_.isEmpty(peers)">Please wait agent accept your call...</h2>
             </div>
           </div>
           <div ng-switch-default>
@@ -105,3 +113,6 @@
 
   </div>
 </div>
+
+<chat adjustable="true" room="RoomService"></chat>
+

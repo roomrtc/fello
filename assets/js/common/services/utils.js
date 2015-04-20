@@ -3,12 +3,16 @@
  */
 
 angular.module('fello.common')
-  .factory('utils', ['$sce', '$timeout', '$q', function ($sce, $timeout, $q) {
+  .factory('utils', ['$sce', '$timeout', '$q', '$window', function ($sce, $timeout, $q, $window) {
     var utils = {};
 
     utils.getStreamAsUrl = function (stream) {
       var url = URL.createObjectURL(stream); //URL.revokeObjectURL(url);
       return $sce.trustAsResourceUrl(url);
+    };
+
+    utils.revokeObjectURL = function (url) {
+      URL.revokeObjectURL(url);
     };
 
     utils.getFieldValue = function (field, fieldName) {
@@ -25,6 +29,14 @@ angular.module('fello.common')
         }
       }, 1000);
       return deferred.promise;
+    };
+
+    utils.empty = function () {
+      return undefined;
+    };
+
+    utils.postMessage = function (message, domain) {
+      $window.parent.postMessage(message, domain || "*");
     };
 
     return utils;

@@ -238,6 +238,21 @@ module.exports = function(grunt) {
       }
     },
 
+    devStylesEmbedDrawer: {
+      options: {
+        startTag: '<!--EMBED STYLES-->',
+        endTag: '<!--EMBED STYLES END-->',
+        fileTmpl: '<link rel="stylesheet" href="%s">',
+        appRoot: '.tmp/public',
+        verifyExists: false
+      },
+      files: {
+        '.tmp/public/**/*.html': require('../pipeline').cssFilesToInjectEmbedDrawer,
+        'views/**/*.html': require('../pipeline').cssFilesToInjectEmbedDrawer,
+        'views/**/*.ejs': require('../pipeline').cssFilesToInjectEmbedDrawer
+      }
+    },
+
 		devStylesRelative: {
 			options: {
 				startTag: '<!--STYLES-->',

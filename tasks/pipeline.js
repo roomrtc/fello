@@ -46,6 +46,11 @@ var cssFilesToInjectClientRoom = [
   '/css/clientroom/chatbox.css'
 ];
 
+var cssFilesToInjectEmbedDrawer = [
+  '/embed/embed.css',
+  '/embed/callnowbox.css'
+];
+
 
 // Client-side javascript files to inject in order
 // (uses Grunt-style wildcard/glob/splat expressions)
@@ -76,11 +81,13 @@ var jsFilesToInjectDashboard = [
   // <!-- Fello main scripts -->
   '/easyrtc/easyrtc.js',
   '/socket.io/socket.io.js',
+  '/vendor/sails.io.io/sails-io.js',
   '/vendor/angular/angular.js',
   '/vendor/angular-ui-router/angular-ui-router.js',
   '/vendor/angular-ui-bootstrap/src/dropdown/dropdown.js',
   '/vendor/angular-sanitize/angular-sanitize.js',
   '/vendor/angular-cookies/angular-cookies.js',
+  '/vendor/angular-sails/angular-sails.js',
   //'/vendor/angular-youtube-mb/angular-youtube-embed.js',
   '/vendor/angular-bind-html-compile/angular-bind-html-compile.js',
   '/vendor/ng-elif/elif.js',
@@ -100,6 +107,7 @@ var jsFilesToInjectDashboard = [
   '/js/dashboard/directives/TimeAgoDirective.js',
   '/js/dashboard/directives/ChatboxDirective.js',
   '/js/dashboard/controllers/LiveController.js'
+  // Angular Sails.io
 ];
 
 var jsFilesToInjectClientRoom = [
@@ -174,6 +182,9 @@ module.exports.cssFilesToInjectDashboard = cssFilesToInjectDashboard.map(functio
   return '.tmp/public/' + path;
 });
 module.exports.cssFilesToInjectClientRoom = cssFilesToInjectClientRoom.map(function(path) {
+  return '.tmp/public/' + path;
+});
+module.exports.cssFilesToInjectEmbedDrawer = cssFilesToInjectEmbedDrawer.map(function(path) {
   return '.tmp/public/' + path;
 });
 module.exports.jsFilesToInject = jsFilesToInject.map(function(path) {

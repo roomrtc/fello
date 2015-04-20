@@ -54,5 +54,14 @@ app.factory("rtcapi", ["$rootScope", function ($rootScope) {
       , destRoom = message.roomName;
     sendMessage(destTargetId, destRoom, message.message);
   };
+
+  $rootScope.$on('disconnectRtc', function (event, data) {
+    // close socket
+    if (rtcApi.webSocket) {
+      rtcApi.disconnect();
+    }
+    // close media
+    rtcApi.closeLocalMediaStream();
+  });
   return rtcApi;
 }]);

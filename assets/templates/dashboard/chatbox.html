@@ -1,35 +1,38 @@
-<div class="popup-box chat-popup" id="{{::client.callId}}">
-  <div class="popup-head">
+<div class="popup-box chat-popup" id="{{::client.callId}}" ng-init="toggleDisplay = true">
+  <div class="popup-head" ng-click="toggleDisplay = !toggleDisplay">
     <div class="popup-head-left">{{::client.name}}</div>
     <div class="popup-head-right"><a ng-click="close(client.callId)">✕</a></div>
     <div style="clear: both"></div>
   </div>
-  <div class="popup-messages">
-    <ol class="discussion">
-      <li ng-repeat="message in (client && client.messages)"
-          ng-class="message.fromClientId == me.easyrtcid ? 'self' : 'other'">
-        <div class="avatar">
-          <img ng-if="message.fromClientId == me.easyrtcid"
-            src="/icon/icon2.png"/>
-          <img ng-if="message.fromClientId != me.easyrtcid"
-            src="/icon/icon3.png"/>
-        </div>
-        <div class="messages">
-          <p>{{::message.message}}</p>
-          <time datetime="2009-11-13T20:00">{{::client.name}}.{{::message.timeReceived}}</time>
-        </div>
-      </li>
-    </ol>
-  </div>
-  <div class="_50mz fbNubFlyoutFooter">
-    <div class="_552h"><textarea ng-model="client.message" style="height: 15px;" class="uiTextareaAutogrow _552m"></textarea>
+  <div class="popup-box-content" ng-class="{displayBlock: toggleDisplay}">
+    <div class="popup-messages">
+      <ol class="discussion">
+        <li ng-repeat="message in (client && client.messages)"
+            ng-class="message.fromClientId == me.easyrtcid ? 'self' : 'other'">
+          <div class="avatar">
+            <img ng-if="message.fromClientId == me.easyrtcid"
+                 src="/icon/icon2.png"/>
+            <img ng-if="message.fromClientId != me.easyrtcid"
+                 src="/icon/icon3.png"/>
+          </div>
+          <div class="messages">
+            <p>{{::message.message}}</p>
+            <time datetime="2009-11-13T20:00">{{::client.name}}.{{::message.timeReceived}}</time>
+          </div>
+        </li>
+      </ol>
     </div>
-    <div style="right: 0px;" class="_552n">
-      <div class="_10nr"></div>
-      <div class="_6a _552o">
-        <a class="btn btn-xs btn-success" ng-click="sendMessage()"><i class="fa fa-wechat chat"></i> Send</a>
+    <div class="_50mz fbNubFlyoutFooter">
+      <div class="_552h"><textarea ng-model="client.message" style="height: 15px;"
+                                   class="uiTextareaAutogrow _552m"></textarea>
       </div>
-      <div></div>
+      <div style="right: 0px;" class="_552n">
+        <div class="_10nr"></div>
+        <div class="_6a _552o">
+          <a class="btn btn-xs btn-success" ng-disabled="client.message == ''" ng-click="sendMessage()"><i class="fa fa-wechat chat"></i> Send</a>
+        </div>
+        <div></div>
+      </div>
     </div>
   </div>
 </div>

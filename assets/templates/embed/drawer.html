@@ -1,0 +1,204 @@
+<article class="container-fluid full-height">
+  <div class="row">
+    <header data-role="nav-view">
+    </header>
+  </div>
+
+  <div class="row full-height">
+    <div class="col-xs-12 col-sm-6 full-height drawer-overlay">
+
+      <div class="drawer-controls clearfix">
+        <div class="drawer-nav pull-right">
+          <ul class="list-unstyled">
+            <li><a href="#" ng-click="closeDrawer()" style="color: white;"><i class="glyphicon glyphicon-remove"></i>
+              Close</a></li>
+            <li><a href="#" ng-click="minDrawer()" style="color: white;"><i class="glyphicon glyphicon-import"></i>
+              Minimize</a></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+    <div class="col-xs-12 col-sm-6 localView full-height">
+      <div class="header clearfix">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+            <li role="presentation"><a class="nav-expand truncate-line" data-action="full-root" target="_blank"
+                                       href="https://fello.in">
+              <i class="glyphicon glyphicon-home"></i> Fello Home</a>
+              </a></li>
+            <li role="presentation"><a href="#"><i class="glyphicon glyphicon-check"></i> Feedback?</a></li>
+            <li role="presentation"><a href="#"><i class="glyphicon glyphicon-heart"></i> Get Help</a></li>
+          </ul>
+        </nav>
+        <nav>
+          <ul class="nav nav-pills pull-left">
+            <li><a href="https://fello.in/{{::roomName}}" target="_blank">
+              <i class="glyphicon glyphicon-th-large"></i> View on Fello
+            </a></li>
+          </ul>
+        </nav>
+      </div>
+      <!--glyphicon glyphicon-bookmark-->
+      <div class="session full-height">
+        <div class="section-expanded">
+          <div class="well well-sm text-center">
+            This is {{::roomName}} room embedded !
+          </div>
+        </div>
+        <div class="full-height wrap-table">
+          <header class="embedded">
+            <!--<h1>Content-Header</h1>-->
+          </header>
+          <main class="embedded">
+            <div class="section-contained inner">
+              <div class="container-promptbox">
+                <div class="remotes">
+                  <div class="videocontainer full-height" ng-repeat="(id, peer) in peers">
+                    <div class="full-height">
+                      <video id="{{id}}" class="peers" src="{{peer}}" autoplay="true" resize></video>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="text-align: center" ng-if="_.isEmpty(peers)">
+                  <!--START PROMPT USER-->
+                  <div ng-switch on="clientInfo.promptMessage">
+                    <div ng-switch-when="AreYouReadyCall">
+                      <h2 ng-if="::readyInfo()">
+                        <timer countdown="9" interval="1000" finish-callback="call(null)">Automatically
+                          call
+                          after {{seconds}} second{{secondsS}}
+                        </timer>
+                      </h2>
+                      <div class="row">
+                        <div class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+                          <form name="frmUserInfo" class="frmUserInfo cf form-horizontal" role="form">
+                            <div style="margin-bottom: 25px" class="input-group">
+                              <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                              <input id="login-username" type="text" class="form-control" name="username"
+                                     ng-model="clientInfo.name"
+                                     placeholder="What's your name ?"
+                                     ng-minlength="2" ng-maxlength="30" required>
+                            </div>
+
+                            <div style="margin-bottom: 25px" class="input-group">
+                              <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+                              <input id="useremail" type="text" class="form-control" name="useremail"
+                                     ng-model="clientInfo.email"
+                                     placeholder="yourname@email.com" ng-minlength="5" ng-maxlength="30" required>
+                            </div>
+
+                            <div class="input-group">
+                              <div class="checkbox">
+                                <label>
+                                  <input id="login-remember" type="checkbox" name="remember"
+                                         ng-checked="remember || true"> Remember me
+                                </label>
+                              </div>
+                            </div>
+
+                            <div style="margin-top:10px" class="form-group">
+                              <!-- Button -->
+
+                              <div class="col-sm-12 controls">
+                                <button class="btn btn-success" ng-click="call(agentCallId)"
+                                        ng-disabled="frmUserInfo.$invalid">Call now !
+                                </button>
+                                &nbsp;
+                                <button ng-if="::readyInfo()" class="btn btn-danger" ng-click="stopTimer()">I'm not
+                                  ready
+                                </button>
+                              </div>
+                            </div>
+
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                    <div ng-switch-when="DoYouWantRecall">
+                      <div class="row">
+                        <h2>Your call has been finished!</h2>
+                        <h4>Please view it on Fello to recall</h4>
+                        <div>
+                          <a class="btn btn-success" href="https://fello.in/demo" target="_blank">Recall</a>
+                        </div>
+                      </div>
+                    </div>
+                    <div ng-switch-when="YouAreDenied">
+                      <div class="row">
+                        <h2>You are denied by Admin! Do you want to recall ?</h2>
+
+                        <div>
+                          <button class="btn btn-success" ng-click="call(agentCallId)">Recall</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div ng-switch-when="YouAreBlocked">
+                      <div class="row">
+                        <h2>Sorry! You are blocked by Admin for 1 week. Now you can't do call.</h2>
+                      </div>
+                    </div>
+                    <div ng-switch-when="PleaseAllowAccessMedia">
+                      <div class="row">
+                        <h2>We do not have permission access your Media Device. <br/> Please allow us to use your Camera
+                          and
+                          Microphone. <br/> After that enjoy your conversation!</h2>
+
+                        <div>
+                          <p>Insert an image to guide user!</p>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div ng-switch-when="PleaseWaitAccept">
+                      <div class="row">
+                        <h2 ng-show="_.isEmpty(peers)">Please wait agent accept your call...</h2>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+              <div ng-if="IsNotAllowAccessMedia">
+                <h2>Please allow us to use your Camera and Microphone. <br/>
+                  After that enjoy your conversation!</h2>
+
+                <div>
+                  <p>Guide: Click allow button!</p>
+                </div>
+              </div>
+
+            </div>
+          </main>
+          <footer class="embedded">
+            <div class="mastfoot1">
+              <div class="row">
+                <div class="col-xs-12 col-sm-7">
+                  <!--<chat adjustable="true" room="RoomService"></chat>-->
+                  <embeddedchat clientInfo="clientInfo" room="RoomService"></embeddedchat>
+
+                </div>
+                <div class="col-xs-12 col-sm-5">
+                  <div ng-if="localVideo" class="videocontainer focusable" splitscreen="true">
+                    <div>
+                      <video id="localVideo" class="client" src="{{localVideo}}"
+                             ng-click="handleVideoClick($event)" resize autoplay="true"></video>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</article>
+
+
+</div>
+
+

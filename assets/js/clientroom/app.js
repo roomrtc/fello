@@ -58,6 +58,14 @@ angular
           controller: 'LiveController'
         });
 
+      // Embed Room
+      $stateProvider
+        .state('embedroom', {
+          url: '/embed/:roomName',
+          templateUrl: '/templates/embed/drawer.html',
+          controller: 'LiveController'
+        });
+
       // Default route to client room
       $urlRouterProvider.otherwise('/404');
 
@@ -101,9 +109,10 @@ angular
   .run(['$rootScope', '$state', '$location', '$window', 'rtcapi', 'lodash', 'RoomState', function ($rootScope, $state, $location, $window, rtcApi, _, RoomState) {
     $rootScope._ = _;
     $rootScope.$on("$locationChangeStart", function (event, next, current) {
-      if (rtcApi.webSocket) {
-        rtcApi.disconnect();
-      }
+      //if (rtcApi.webSocket) {
+      //  rtcApi.disconnect();
+      //}
+      $rootScope.$broadcast('disconnectRtc');
     });
 
     $rootScope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {

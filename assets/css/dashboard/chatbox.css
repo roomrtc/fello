@@ -17,7 +17,7 @@
   position: fixed;
   bottom: 0px;
   right: 220px;
-  height: 285px;
+  /*height: 285px;*/
   background-color: rgb(237, 239, 244);
   width: 300px;
   border: 1px solid rgba(29, 49, 91, .3);

@@ -1,0 +1,212 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Full height */
+html, body, div.viewport, div.wrap-table, .full-height {
+  height: 100%;
+}
+
+.home-drawer, body {
+  background: transparent none repeat scroll 0 0;
+}
+
+/* Main container-fluid */
+
+.home-drawer .localView {
+  background: #eff3fa;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  transition: all 250ms ease-in-out;
+  border-left: 1px solid #7f919e;
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  /*height: calc(100% - 10px);*/
+}
+
+/* Header */
+.header h3 {
+  margin: 0 10px;
+  line-height: 40px;
+}
+
+a small {
+  color: #337ab7 !important;
+}
+
+/* Left: Remote view */
+div.drawer-overlay {
+  background: rgba(53, 58, 61, .8);
+}
+
+.mastfoot1 {
+  width: 100%;
+  height: 340px;
+}
+
+/* Video style */
+.videocontainer video {
+  display: block;
+  margin: 0 auto;
+  height:236px;
+}
+
+.container-promptbox {
+  /*margin: 100px auto 0;*/
+}
+
+/* Wrapper table */
+.wrap-table {
+  display: table;
+  width: 100%;
+}
+
+.page-row {
+  display: table-row;
+  height: 1px;
+}
+
+.page-row-expanded { height: 100%; }
+
+/* Responsive Embbed room */
+header.embedded {}
+main.embedded {
+  display: block;
+  bottom: 236px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: absolute;
+  text-align: center;
+  top: 101px;
+  width: 100%;
+}
+footer.embedded {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  height: 238px;
+  /* width: 630px; */
+  /* max-width: 630px; */
+  z-index: 600;
+  background-color: #fff;
+  border-top: 1px solid #c2c9d4;
+  border-left: 1px solid #7f919e;
+}
+
+/* chatbox */
+.chatbox-messages {
+  height: 167px;
+  overflow-y: scroll;
+}
+
+.discussion {
+  list-style: none;
+  background: #e5e5e5;
+  margin: 0;
+  padding: 0 0 50px 0;
+}
+
+.discussion li {
+  padding: 0.5rem;
+  overflow: hidden;
+  display: flex;
+}
+
+.discussion .avatar {
+  width: 40px;
+  position: relative;
+}
+
+.discussion .avatar img {
+  display: block;
+  width: 100%;
+}
+
+.other .avatar:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border: 5px solid white;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+}
+
+.self {
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.self .messages {
+  order: 1;
+  border-bottom-right-radius: 0;
+}
+
+.self .avatar {
+  order: 2;
+}
+
+.self .avatar:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border: 5px solid white;
+  border-right-color: transparent;
+  border-top-color: transparent;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.messages {
+  background: white;
+  padding: 10px;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.messages p {
+  font-size: 0.8em;
+  margin: 0 0 0.2em 0;
+}
+
+.messages time {
+  font-size: 0.7em;
+  color: #ccc;
+}
+
+@keyframes pulse {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.5;
+  }
+}
+
+/* Animate message */
+.animate-if {
+  background: white;
+  border: 1px solid black;
+  padding: 10px;
+}
+
+.animate-if.ng-enter, .animate-if.ng-leave {
+  -webkit-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+}
+
+.animate-if.ng-enter,
+.animate-if.ng-leave.ng-leave-active {
+  opacity: 0;
+}
+
+.animate-if.ng-leave,
+.animate-if.ng-enter.ng-enter-active {
+  opacity: 1;
+}

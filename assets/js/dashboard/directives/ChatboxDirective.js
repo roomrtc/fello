@@ -26,14 +26,15 @@ angular.module('fello.dashboard')
           //deWatcher();
         });
 
+        var boxContent = element.find(".popup-box-content");
         element.find(".popup-head")
           .css({cursor: "pointer"})
           .on("click", function (e) {
-          var h = element.css('height');
-          if(h != "30px") {
-            element.css({height: "30px"});
+          var h = boxContent.css('display');
+          if(h != "none") {
+            boxContent.css({display: "none"});
           } else {
-            element.css({height: "285px"});
+            boxContent.css({display: "block"});
           }
         });
       },
