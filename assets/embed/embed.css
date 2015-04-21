@@ -14,7 +14,7 @@ html, body, div.viewport, div.wrap-table, .full-height {
 
 /* Main container-fluid */
 
-.home-drawer .localView {
+.home-drawer .drawer-content {
   background: #eff3fa;
   overflow: hidden;
   padding: 0;
@@ -24,6 +24,7 @@ html, body, div.viewport, div.wrap-table, .full-height {
   -webkit-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
   /*height: calc(100% - 10px);*/
+  height: 100%;
 }
 
 /* Header */
@@ -39,6 +40,7 @@ a small {
 /* Left: Remote view */
 div.drawer-overlay {
   background: rgba(53, 58, 61, .8);
+  height: 100%;
 }
 
 .mastfoot1 {
@@ -46,7 +48,7 @@ div.drawer-overlay {
   height: 340px;
 }
 
-.mastfoot1 .row {
+.bg-nocam {
 background-image: url(/icon/activinvite-icon.png);
 }
 

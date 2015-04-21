@@ -31,7 +31,7 @@ var cssFilesToInjectHomepage = [
 var cssFilesToInjectDashboard = [
   '/styles/common.css',
   '/styles/extra/animate.css',
-  '/css/dashboard/bootstrap.min.css',
+  //'/css/dashboard/bootstrap.min.css',
   '/css/dashboard/dashboard.css',
   '/css/dashboard/sticky.css',
   '/css/dashboard/chatbox.css',

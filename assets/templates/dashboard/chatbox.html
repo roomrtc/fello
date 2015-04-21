@@ -22,17 +22,22 @@
         </li>
       </ol>
     </div>
-    <div class="_50mz fbNubFlyoutFooter">
-      <div class="_552h"><textarea ng-model="client.message" style="height: 15px;"
-                                   class="uiTextareaAutogrow _552m"></textarea>
-      </div>
-      <div style="right: 0px;" class="_552n">
-        <div class="_10nr"></div>
-        <div class="_6a _552o">
-          <a class="btn btn-xs btn-success" ng-disabled="client.message == ''" ng-click="sendMessage()"><i class="fa fa-wechat chat"></i> Send</a>
+    <form ng-submit="sendMessage()" class="message-input-wrapper">
+
+      <div class="has-success has-feedback">
+
+        <div class="input-group">
+          <span class="input-group-addon unread-count">{{ numberOfUnreadMessages || '@' }}</span>
+          <input id="chat-message-box-input" class="form-control" type="text" ng-model="client.message"
+                 ng-i18next="[placeholder]Write something nice!" placeholder="Write something nice!">
+
+          <!--<div ng-show="!isConnected()" class="form-control fake-input" ng-i18next>Chat temporarily unavailable, please-->
+            <!--wait...-->
+          <!--</div>-->
         </div>
-        <div></div>
+        <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
       </div>
-    </div>
+
+    </form>
   </div>
 </div>

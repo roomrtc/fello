@@ -5,7 +5,7 @@
   </div>
 
   <div class="row full-height">
-    <div class="col-xs-12 col-sm-6 full-height drawer-overlay">
+    <div class="col-xs-12 col-sm-6 drawer-overlay">
 
       <div class="drawer-controls clearfix">
         <div class="drawer-nav pull-right">
@@ -19,7 +19,7 @@
       </div>
 
     </div>
-    <div class="col-xs-12 col-sm-6 localView full-height">
+    <div class="col-xs-12 col-sm-6 drawer-content">
       <div class="header clearfix">
         <nav>
           <ul class="nav nav-pills pull-right">
@@ -40,13 +40,13 @@
         </nav>
       </div>
       <!--glyphicon glyphicon-bookmark-->
-      <div class="session full-height">
+      <div class="session">
         <div class="section-expanded">
           <div class="well well-sm text-center">
             This is {{::roomName}} room embedded !
           </div>
         </div>
-        <div class="full-height wrap-table">
+        <div class="wrap-table">
           <header class="embedded">
             <!--<h1>Content-Header</h1>-->
           </header>
@@ -54,8 +54,8 @@
             <div class="section-contained inner">
               <div class="container-promptbox">
                 <div class="remotes">
-                  <div class="videocontainer full-height" ng-repeat="(id, peer) in peers">
-                    <div class="full-height">
+                  <div class="videocontainer" ng-repeat="(id, peer) in peers">
+                    <div class="">
                       <video id="{{id}}" class="peers" src="{{peer}}" autoplay="true" resize></video>
                     </div>
                   </div>
@@ -174,7 +174,7 @@
           </main>
           <footer class="embedded">
             <div class="mastfoot1">
-              <div class="row">
+              <div class="row" ng-class="{'bg-nocam': !localVideo}">
                 <div class="col-xs-12 col-sm-7">
                   <!--<chat adjustable="true" room="RoomService"></chat>-->
                   <embeddedchat clientInfo="clientInfo" room="RoomService"></embeddedchat>
