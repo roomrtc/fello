@@ -55,7 +55,13 @@ angular
         .state('clientroom', {
           url: '/:roomName',
           templateUrl: '/templates/clientroom/live.html',
-          controller: 'LiveController'
+          controller: 'LiveController',
+          resolve: {
+            dummy1: ['$stateParams', 'RoomState', function ($stateParams, RoomState) {
+              RoomState.roomName = $stateParams.roomName;
+              RoomState.serverApp = $stateParams.roomName;
+            }]
+          }
         });
 
       // Embed Room
